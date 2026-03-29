@@ -4,7 +4,7 @@
 const SRC_PATHS = ['data/data.json', 'data.json'];
 const SC   = '!#%ABCDEFabcdef0123456789';
 let paused = false;
-const VW = VW; /* read once — avoids forced reflow on each check */
+const VW = window.innerWidth; /* read once — avoids forced reflow on each check */
 document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
 
 /* ── hero entrance — fires immediately on load ── */
