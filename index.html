@@ -149,9 +149,9 @@
   <!-- Full stylesheet — render-blocking but small (8 KB), prevents CLS -->
   <link rel="stylesheet" href="assets/css/style.css">
 
-  <!-- Fonts — only display/mono fonts; body uses system stack -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&display=optional" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&display=optional"></noscript>
+  <!-- Fonts — swap with metric-matched fallbacks to minimise CLS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&display=swap"></noscript>
 
   <!-- Font Awesome subset — only icons used on this page (~2 KB vs ~31 KB) -->
   <link rel="stylesheet" href="assets/css/icons.css" media="print" onload="this.media='all'">
