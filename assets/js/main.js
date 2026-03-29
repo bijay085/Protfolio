@@ -4,6 +4,7 @@
 const SRC_PATHS = ['data/data.json', 'data.json'];
 const SC   = '!#%ABCDEFabcdef0123456789';
 let paused = false;
+const VW = VW; /* read once — avoids forced reflow on each check */
 document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
 
 /* ── hero entrance — fires immediately on load ── */
@@ -48,9 +49,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 });
 
-fetch(SRC_PATHS[0])
-  .then(r=>r.ok ? r : fetch(SRC_PATHS[1]))
-  .then(r=>{ if(!r.ok) throw r.status; return r.json(); })
+/* use inline data if available, else fetch as fallback */
+const dataPromise = window.__D
+  ? Promise.resolve(window.__D)
+  : fetch(SRC_PATHS[0]).then(r=>r.ok?r:fetch(SRC_PATHS[1])).then(r=>r.json());
+
+dataPromise
   .then(d=>{
     buildSkills(d.skills);
     buildExperience(d.experience);
@@ -433,7 +437,7 @@ function el(tag,cls=''){
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const isMobile = window.innerWidth < 768;
+  const isMobile = VW < 768;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
 
   function spawnGeo(id,cfg){
@@ -571,7 +575,7 @@ function el(tag,cls=''){
 /* ── EXTRA GEO INSTANCES ────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(window.innerWidth < 768) return; /* skip on mobile — too CPU heavy */
+  if(VW < 768) return; /* skip on mobile — too CPU heavy */
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa';
   const spawnGeo = window._spawnGeo;
 
@@ -666,10 +670,10 @@ function el(tag,cls=''){
 /* ── Floating background particles on each section ── */
 function initSectionBg(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(window.innerWidth < 768) return; /* skip entirely on mobile */
+  if(VW < 768) return; /* skip entirely on mobile */
   const IDS    = ['about','experience','skills','projects','services','contact'];
   const COLORS = ['#3b82f6','#67e8f9','#a78bfa'];
-  const COUNT  = window.innerWidth < 1080 ? 5 : 8; /* fewer particles on mid-range */
+  const COUNT  = VW < 1080 ? 5 : 8; /* fewer particles on mid-range */
 
   IDS.forEach(id=>{
     const sec = document.getElementById(id);
@@ -693,10 +697,24 @@ function initSectionBg(){
     }));
 
     function resize(entries){
-      /* use ResizeObserver contentRect if available — avoids forced reflow */
+      /* use ResizeObserver contentRect — no forced reflow */
       const rect = entries?.[0]?.contentRect;
-      W = rect ? rect.width  : sec.getBoundingClientRect().width;
-      H = rect ? rect.height : sec.getBoundingClientRect().height;
+      if(!rect) return;
+      W = rect.width;
+      H = rect.height;
+      canvas.width  = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width  = W+'px';
+      canvas.style.height = H+'px';
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+      /* scatter particles on first call */
+      pts.forEach(p=>{
+        if(p.x===0&&p.y===0){
+          p.x=Math.random()*W;
+          p.y=Math.random()*H;
+        }
+      });
+    }
       canvas.width  = W * DPR;
       canvas.height = H * DPR;
       canvas.style.width  = W+'px';
@@ -710,8 +728,6 @@ function initSectionBg(){
         }
       });
     }
-    resize();
-
     /* draw connection lines between nearby particles */
     function drawLines(){
       for(let a=0;a<pts.length;a++){
@@ -733,6 +749,7 @@ function initSectionBg(){
     }
 
     function frame(){
+      if(!W || !H){ requestAnimationFrame(frame); return; } /* wait for ResizeObserver */
       ctx.clearRect(0,0,W,H);
       drawLines();
       pts.forEach(p=>{
@@ -750,10 +767,10 @@ function initSectionBg(){
       if(!document.hidden) requestAnimationFrame(frame);
       else setTimeout(frame,200);
     }
-    frame();
 
     const ro = new ResizeObserver(resize);
-    ro.observe(sec);
+    ro.observe(sec); /* triggers resize() with contentRect, sets W/H */
+    frame();
   });
 }
 
