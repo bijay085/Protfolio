@@ -433,6 +433,7 @@ function el(tag,cls=''){
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const isMobile = window.innerWidth < 768;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
 
   function spawnGeo(id,cfg){
@@ -545,29 +546,32 @@ function el(tag,cls=''){
     dots:[{r:100,speed:.5,color:CYAN,size:4,offset:0},{r:100,speed:.75,color:BLUE,size:3.5,offset:Math.PI*1.1},
       {r:100,speed:.35,color:VIOLET,size:3,offset:Math.PI*.6},{r:58,speed:-.6,color:BLUE,size:4,offset:.8},{r:58,speed:-1,color:CYAN,size:3,offset:Math.PI*1.4}]});
 
-  spawnGeo('heroGeo2',{size:200,scale:.68,tOffset:1.2,
-    rings:[{r:100,color:VIOLET,alpha:.15,dash:[6,9]},{r:58,color:BLUE,alpha:.12,dash:[4,11]}],
-    arcs:[{r:100,color:BLUE,alpha:.25,speed:-.5,dash:[12,52]},{r:58,color:CYAN,alpha:.2,speed:.32,dash:[8,44]}],
-    dots:[{r:100,speed:-.6,color:BLUE,size:3.5,offset:.4},{r:100,speed:-.9,color:VIOLET,size:3,offset:Math.PI},
-      {r:58,speed:.7,color:CYAN,size:3.5,offset:1},{r:58,speed:1.1,color:BLUE,size:2.5,offset:Math.PI*1.5}]});
+  if(!isMobile){
+    spawnGeo('heroGeo2',{size:200,scale:.68,tOffset:1.2,
+      rings:[{r:100,color:VIOLET,alpha:.15,dash:[6,9]},{r:58,color:BLUE,alpha:.12,dash:[4,11]}],
+      arcs:[{r:100,color:BLUE,alpha:.25,speed:-.5,dash:[12,52]},{r:58,color:CYAN,alpha:.2,speed:.32,dash:[8,44]}],
+      dots:[{r:100,speed:-.6,color:BLUE,size:3.5,offset:.4},{r:100,speed:-.9,color:VIOLET,size:3,offset:Math.PI},
+        {r:58,speed:.7,color:CYAN,size:3.5,offset:1},{r:58,speed:1.1,color:BLUE,size:2.5,offset:Math.PI*1.5}]});
 
-  spawnGeo('heroGeo3',{size:180,scale:.58,tOffset:2.5,
-    rings:[{r:100,color:CYAN,alpha:.14,dash:[5,10]},{r:58,color:VIOLET,alpha:.1,dash:[3,13]}],
-    arcs:[{r:100,color:VIOLET,alpha:.22,speed:.6,dash:[10,50]}],
-    dots:[{r:100,speed:.8,color:CYAN,size:3.5,offset:0},{r:100,speed:.45,color:VIOLET,size:3,offset:Math.PI*.8},
-      {r:58,speed:-.9,color:BLUE,size:3,offset:.6},{r:58,speed:-.55,color:CYAN,size:2.5,offset:Math.PI*1.2}]});
+    spawnGeo('heroGeo3',{size:180,scale:.58,tOffset:2.5,
+      rings:[{r:100,color:CYAN,alpha:.14,dash:[5,10]},{r:58,color:VIOLET,alpha:.1,dash:[3,13]}],
+      arcs:[{r:100,color:VIOLET,alpha:.22,speed:.6,dash:[10,50]}],
+      dots:[{r:100,speed:.8,color:CYAN,size:3.5,offset:0},{r:100,speed:.45,color:VIOLET,size:3,offset:Math.PI*.8},
+        {r:58,speed:-.9,color:BLUE,size:3,offset:.6},{r:58,speed:-.55,color:CYAN,size:2.5,offset:Math.PI*1.2}]});
 
-  spawnGeo('heroGeo4',{size:150,scale:.48,tOffset:.8,
-    rings:[{r:100,color:BLUE,alpha:.14,dash:[6,10]},{r:58,color:CYAN,alpha:.1,dash:[4,12]}],
-    arcs:[{r:58,color:BLUE,alpha:.2,speed:-.4,dash:[8,42]}],
-    dots:[{r:100,speed:.65,color:BLUE,size:3.5,offset:.2},{r:100,speed:1,color:CYAN,size:3,offset:Math.PI},
-      {r:58,speed:-.8,color:VIOLET,size:3,offset:1.2}]});
+    spawnGeo('heroGeo4',{size:150,scale:.48,tOffset:.8,
+      rings:[{r:100,color:BLUE,alpha:.14,dash:[6,10]},{r:58,color:CYAN,alpha:.1,dash:[4,12]}],
+      arcs:[{r:58,color:BLUE,alpha:.2,speed:-.4,dash:[8,42]}],
+      dots:[{r:100,speed:.65,color:BLUE,size:3.5,offset:.2},{r:100,speed:1,color:CYAN,size:3,offset:Math.PI},
+        {r:58,speed:-.8,color:VIOLET,size:3,offset:1.2}]});
+  }
 
 })();
 
 /* ── EXTRA GEO INSTANCES ────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.innerWidth < 768) return; /* skip on mobile — too CPU heavy */
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa';
   const spawnGeo = window._spawnGeo;
 
@@ -662,9 +666,10 @@ function el(tag,cls=''){
 /* ── Floating background particles on each section ── */
 function initSectionBg(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.innerWidth < 768) return; /* skip entirely on mobile */
   const IDS    = ['about','experience','skills','projects','services','contact'];
   const COLORS = ['#3b82f6','#67e8f9','#a78bfa'];
-  const COUNT  = 8;
+  const COUNT  = window.innerWidth < 1080 ? 5 : 8; /* fewer particles on mid-range */
 
   IDS.forEach(id=>{
     const sec = document.getElementById(id);
@@ -687,9 +692,11 @@ function initSectionBg(){
       a : .15 + Math.random()*.2,
     }));
 
-    function resize(){
-      W = sec.offsetWidth;
-      H = sec.offsetHeight;
+    function resize(entries){
+      /* use ResizeObserver contentRect if available — avoids forced reflow */
+      const rect = entries?.[0]?.contentRect;
+      W = rect ? rect.width  : sec.getBoundingClientRect().width;
+      H = rect ? rect.height : sec.getBoundingClientRect().height;
       canvas.width  = W * DPR;
       canvas.height = H * DPR;
       canvas.style.width  = W+'px';

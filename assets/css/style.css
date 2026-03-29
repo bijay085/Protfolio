@@ -18,8 +18,8 @@
   --tx3:  #7888a8;
   --red:  #fb7185;
 
-  --dsp:  'Chakra Petch', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --dsp:  'Chakra Petch', 'Chakra Petch Fallback', sans-serif;
+  --mono: 'JetBrains Mono', 'JetBrains Mono Fallback', monospace;
   --body: 'Inter', sans-serif;
 }
 
@@ -41,6 +41,24 @@ ul { list-style:none; }
 ::-webkit-scrollbar-thumb { background:var(--vi); }
 
 
+/* ── FALLBACK FONT METRICS — prevents layout shift on web font swap ── */
+@font-face {
+  font-family: 'Chakra Petch Fallback';
+  src: local('Arial');
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  ascent-override: 83%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 110%;
+}
+
 /* ── h2 reset — section headings styled as divs were ── */
 h2.sh-t {
   margin: 0;
@@ -51,12 +69,61 @@ h2.sh-t {
   background: none;
 }
 
-/* ── REVEAL ─────────────────────────────── */
-.rv { opacity:0; transform:translateY(14px); transition:opacity .5s ease,transform .5s ease; }
-.rv.on { opacity:1; transform:none; }
+/* ── .char — individual letter spans for GSAP hero entrance ── */
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* ── REVEAL & ENTRANCE ANIMATIONS ───────── */
+
+/* base hidden state */
+.rv {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .52s ease, transform .52s ease;
+}
+.rv.on { opacity: 1; transform: none; }
+
+/* directional variants */
+.rv.rv-up    { transform: translateY(28px); }
+.rv.rv-left  { transform: translateX(-40px); }
+.rv.rv-right { transform: translateX(40px); }
+.rv.rv-up.on,
+.rv.rv-left.on,
+.rv.rv-right.on { opacity: 1; transform: none; }
+
+/* hero elements — pre-hidden, then animated in via JS class */
+.hero-pre {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.hero-in-down {
+  animation: heroInDown .55s cubic-bezier(.22,1,.36,1) forwards;
+}
+.hero-in-up {
+  animation: heroInUp .55s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes heroInDown {
+  from { opacity:0; transform:translateY(-22px); }
+  to   { opacity:1; transform:none; }
+}
+@keyframes heroInUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* spine draw */
+.spine-pre  { transform: scaleY(0); transform-origin: top center; }
+.spine-draw { animation: spineDraw 1.2s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes spineDraw {
+  from { transform: scaleY(0); transform-origin: top center; }
+  to   { transform: scaleY(1); transform-origin: top center; }
+}
 
 /* force visible if already in viewport */
 .rv-instant { opacity:1 !important; transform:none !important; }
+
 
 /* ── HEADER ─────────────────────────────── */
 #hdr {
@@ -752,10 +819,12 @@ section::after {
   background:var(--v06); border:1px solid var(--v15); color:var(--vi); font-size:.76rem;
   margin-bottom:12px; transition:all .18s; border-radius:8px;
   animation: siIdle 3s ease-in-out infinite;
+  will-change: opacity;
 }
 @keyframes siIdle {
-  0%,100% { box-shadow: 0 0 0px rgba(59,130,246,0); }
-  50%     { box-shadow: 0 0 12px rgba(59,130,246,.25); }
+  /* opacity-only — runs on compositor, zero repaint cost */
+  0%,100% { opacity: 0.75; }
+  50%     { opacity: 1;    }
 }
 .sc:hover .si { background:var(--vi); color:#000; border-color:var(--vi); }
 .stt { font-family:var(--dsp); font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--cy); margin-bottom:8px; }
@@ -832,11 +901,15 @@ section::after {
 /* ── WILL-CHANGE — promote animated elements to own layer ── */
 .profile-img::before,
 .profile-img::after    { will-change: transform; }
-.exp-tl-dot            { will-change: box-shadow; }
-.exp-tl-spine          { will-change: background-position; }
+.exp-tl-dot::after     { will-change: transform, opacity; }
+.exp-tl-spine::after   { will-change: transform; }
 #hStatus::before       { will-change: opacity, transform; }
 .caret                 { will-change: opacity; }
 .sys-badge             { will-change: opacity; }
+.si                    { will-change: opacity; }
+
+/* ── CONTAIN — limit style/layout recalc scope per card ── */
+.pc, .sc, .sk-hud-box, .exp-hud { contain: layout style; }
 
 /* ── FOCUS VISIBLE — keyboard navigation ── */
 a:focus-visible,
@@ -880,8 +953,8 @@ button:focus-visible {
   }
   .profile-img::before,
   .profile-img::after { animation: none !important; }
-  .exp-tl-dot         { animation: none !important; }
-  .exp-tl-spine       { animation: none !important; background: var(--bdr) !important; }
+  .exp-tl-dot::after  { animation: none !important; display: none; }
+  .exp-tl-spine::after{ animation: none !important; display: none; }
   .sys-badge          { animation: none !important; opacity: 1 !important; }
   .caret              { animation: none !important; opacity: 1 !important; }
   #hStatus::before    { animation: none !important; opacity: 1 !important; }
@@ -980,27 +1053,26 @@ button:focus-visible {
 
 
 
-/* ── TIMELINE DOT PULSE ── */
+/* ── TIMELINE DOT PULSE — compositor-only (transform+opacity) ── */
 .exp-tl-dot {
-  animation: dotPulseVi 2.4s ease-in-out infinite;
+  animation: none; /* remove old box-shadow animation */
+  position: relative;
+  will-change: transform;
 }
-.exp-tl-dot.cy {
-  animation: dotPulseCy 2.4s ease-in-out infinite;
+.exp-tl-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--vi);
+  animation: dotRipple 2.4s ease-out infinite;
+  will-change: transform, opacity;
 }
-.exp-tl-dot.pk {
-  animation: dotPulsePk 2.4s ease-in-out infinite;
-}
-@keyframes dotPulseVi {
-  0%,100% { box-shadow: 0 0 6px rgba(59,130,246,.5); }
-  50%     { box-shadow: 0 0 0 5px rgba(59,130,246,0), 0 0 18px rgba(59,130,246,.9); }
-}
-@keyframes dotPulseCy {
-  0%,100% { box-shadow: 0 0 6px rgba(103,232,249,.5); }
-  50%     { box-shadow: 0 0 0 5px rgba(103,232,249,0), 0 0 18px rgba(103,232,249,.9); }
-}
-@keyframes dotPulsePk {
-  0%,100% { box-shadow: 0 0 6px rgba(244,114,182,.5); }
-  50%     { box-shadow: 0 0 0 5px rgba(244,114,182,0), 0 0 18px rgba(244,114,182,.9); }
+.exp-tl-dot.cy::after { background: var(--cy); }
+.exp-tl-dot.pk::after { background: #f472b6; }
+@keyframes dotRipple {
+  0%   { transform: scale(1);   opacity: .55; }
+  100% { transform: scale(3.2); opacity: 0;   }
 }
 
 /* ── SECTION HEADING GLITCH — more intense than hero ── */
@@ -1045,20 +1117,22 @@ button:focus-visible {
   opacity: .5;
 }
 
-/* ── SPINE ANIMATED GRADIENT ── */
+/* ── SPINE ANIMATED GRADIENT — compositor-only overlay ── */
 .exp-tl-spine {
-  background: linear-gradient(
-    180deg,
-    transparent,
-    var(--vi) 20%,
-    var(--cy) 50%,
-    var(--vi) 80%,
-    transparent
-  ) !important;
-  background-size: 1px 300% !important;
-  animation: spineFlow 4s linear infinite !important;
+  background: var(--bdr) !important;
+  overflow: hidden;
+}
+.exp-tl-spine::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 60%;
+  background: linear-gradient(180deg, transparent, var(--vi) 30%, var(--cy) 60%, transparent);
+  animation: spineFlow 3s linear infinite;
+  will-change: transform;
+  top: -60%;
 }
 @keyframes spineFlow {
-  0%   { background-position: 0 0%; }
-  100% { background-position: 0 100%; }
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(267%); }
 }

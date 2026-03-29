@@ -140,15 +140,22 @@
     .rv.on{opacity:1;transform:none}
     ::-webkit-scrollbar{width:2px}
     ::-webkit-scrollbar-thumb{background:var(--vi)}
+    /* fallback font metrics — match Chakra Petch so swap causes zero shift */
+    @font-face{font-family:'Chakra Petch Fallback';src:local('Arial');ascent-override:94%;descent-override:24%;line-gap-override:0%;size-adjust:102%}
+    /* fallback for JetBrains Mono */
+    @font-face{font-family:'JetBrains Mono Fallback';src:local('Courier New');ascent-override:83%;descent-override:20%;line-gap-override:0%;size-adjust:110%}
   </style>
 
-  <!-- Full CSS — async, non-render-blocking -->
-  <link rel="stylesheet" href="assets/css/style.css" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="assets/css/style.css"></noscript>
+  <!-- Full stylesheet — render-blocking but small (8 KB), prevents CLS -->
+  <link rel="stylesheet" href="assets/css/style.css">
 
-  <!-- Fonts — fully async, font-display:swap prevents FOIT -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=swap"></noscript>
+  <!-- Preload critical font files directly — avoids discovery delay -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/chakrapetch/v11/cIflMapbsUkisxE4zvWLbxd0XReu.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/jetbrainsmono/v20/tDbY2o-flEEny0FZhsfKu5WU4xD-IQ.woff2">
+
+  <!-- Fonts — optional display prevents layout shift on swap -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=optional" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=optional"></noscript>
 
   <!-- Font Awesome subset — only icons used on this page (~2 KB vs ~31 KB) -->
   <link rel="stylesheet" href="assets/css/icons.css" media="print" onload="this.media='all'">
@@ -156,6 +163,8 @@
 
   <!-- Preload LCP image -->
   <link rel="preload" href="assets/image/profile.webp" as="image" type="image/webp" fetchpriority="high">
+  <!-- Preload data so JS fetch doesn't wait -->
+  <link rel="preload" href="data/data.json" as="fetch" crossorigin>
 </head>
 <body>
 
