@@ -715,19 +715,6 @@ function initSectionBg(){
         }
       });
     }
-      canvas.width  = W * DPR;
-      canvas.height = H * DPR;
-      canvas.style.width  = W+'px';
-      canvas.style.height = H+'px';
-      ctx.setTransform(DPR,0,0,DPR,0,0);
-      /* scatter on first resize */
-      pts.forEach(p=>{
-        if(p.x===0&&p.y===0){
-          p.x=Math.random()*W;
-          p.y=Math.random()*H;
-        }
-      });
-    }
     /* draw connection lines between nearby particles */
     function drawLines(){
       for(let a=0;a<pts.length;a++){
