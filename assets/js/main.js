@@ -1,7 +1,41 @@
 'use strict';
 
-const SRC  = 'data/data.json';
+/* try data/data.json first, fall back to data.json at root */
+const SRC_PATHS = ['data/data.json', 'data.json'];
 const SC   = '!#%ABCDEFabcdef0123456789';
+let paused = false;
+document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
+
+/* ── hero entrance — fires immediately on load ── */
+(function initHero(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const order=[
+    {sel:'#hStatus',  cls:'hero-in-down', delay:100},
+    {sel:'#hName',    cls:'hero-in-up',   delay:280},
+    {sel:'#hRole',    cls:'hero-in-up',   delay:500},
+    {sel:'#hDesc',    cls:'hero-in-up',   delay:640},
+    {sel:'#hCta',     cls:'hero-in-up',   delay:780},
+  ];
+  order.forEach(({sel,cls,delay})=>{
+    const el=document.querySelector(sel);
+    if(!el) return;
+    el.classList.add('hero-pre');
+    setTimeout(()=>el.classList.add(cls),delay);
+  });
+})();
+
+/* ── spine draw on scroll ── */
+function initSpineDraw(){
+  const spine=document.querySelector('.exp-tl-spine');
+  if(!spine||window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  spine.classList.add('spine-pre');
+  const obs=new IntersectionObserver(entries=>{
+    if(!entries[0].isIntersecting) return;
+    spine.classList.add('spine-draw');
+    obs.disconnect();
+  },{threshold:0.1});
+  obs.observe(spine);
+}
 
 /* ── init ── */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
@@ -14,7 +48,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 });
 
-fetch(SRC)
+fetch(SRC_PATHS[0])
+  .then(r=>r.ok ? r : fetch(SRC_PATHS[1]))
   .then(r=>{ if(!r.ok) throw r.status; return r.json(); })
   .then(d=>{
     buildSkills(d.skills);
@@ -24,11 +59,13 @@ fetch(SRC)
     buildContact(d.contact);
     buildStats(d.stats);
     initReveal();
+    initSpineDraw();
     initTW(d.personal);
     initToggle();
     initDecrypt();
     initSectionBg();
     initGlitchPulse();
+    initMagnetic();
     document.getElementById('yr').textContent = new Date().getFullYear();
   })
   .catch(()=>{
@@ -57,7 +94,7 @@ function buildExperience(list){
         <div class="exp-tags">${(e.tags||[]).map(t=>`<span class="etag">${t}</span>`).join('')}</div>
       </div>`;
     const dot=`<div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div>`;
-    return `<div class="exp-tl-row" data-side="${side}">
+    return `<div class="exp-tl-row rv ${side==='left'?'rv-left':'rv-right'}" data-side="${side}">
       ${side==='left'
         ? `<div class="exp-tl-cell-box">${box}</div><div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div><div class="exp-tl-cell-empty"></div>`
         : `<div class="exp-tl-cell-empty"></div><div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div><div class="exp-tl-cell-box">${box}</div>`}
@@ -67,7 +104,7 @@ function buildExperience(list){
 
 /* ── skills ── */
 function buildSkills(data){
-  const wrap=i('skBody'); if(!wrap) return; wrap.className='sk-hud-grid';
+  const wrap=i('skBody'); if(!wrap) return; wrap.className='sk-hud-grid'; wrap.dataset.stagger='0.08';
 
   const colors = {
     'Languages':    {corner:'var(--vi)',  label:'var(--vi)'},
@@ -81,7 +118,7 @@ function buildSkills(data){
     const vis=(items||[]).filter(s=>s.level>0);
     if(!vis.length) return;
     const col = colors[grp] || {corner:'var(--vi)',label:'var(--vi)'};
-    const box = el('div','sk-hud-box rv');
+    const box = el('div','sk-hud-box rv rv-up');
     box.style.setProperty('--cc', col.corner);
     box.innerHTML=`
       <div class="sk-hud-corner tl"></div>
@@ -104,9 +141,10 @@ function buildSkills(data){
 /* ── projects ── */
 function buildProjects(list){
   const grid=i('prGrid'); if(!grid) return;
+  grid.dataset.stagger='0.07';
   list.forEach(p=>{
     const {c,l}=getBadge(p.status,p.private);
-    const card=el('div','pc rv');
+    const card=el('div','pc rv rv-up');
     card.innerHTML=`
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -123,7 +161,7 @@ function buildProjects(list){
     `;
     grid.append(card);
   });
-  const wip=el('div','pc dash rv');
+  const wip=el('div','pc dash rv rv-up');
   wip.innerHTML=`
     <div class="c-tl"></div><div class="c-tr"></div>
     <div class="c-bl"></div><div class="c-br"></div>
@@ -154,8 +192,9 @@ function getPlinks(p){
 /* ── services ── */
 function buildServices(list){
   const grid=i('svGrid'); if(!grid) return;
+  grid.dataset.stagger='0.07';
   list.forEach(s=>{
-    const c=el('div','sc rv');
+    const c=el('div','sc rv rv-up');
     c.innerHTML=`
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -233,6 +272,24 @@ function buildStats(s){
   if(r && s.response_time) r.textContent=s.response_time;
 }
 
+/* ── magnetic buttons ── */
+function initMagnetic(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('#hCta .btn').forEach(btn=>{
+    btn.addEventListener('mousemove',e=>{
+      const r=btn.getBoundingClientRect();
+      const x=((e.clientX-r.left)-r.width/2)*.28;
+      const y=((e.clientY-r.top)-r.height/2)*.28;
+      btn.style.transform=`translate(${x}px,${y}px)`;
+    });
+    btn.addEventListener('mouseleave',()=>{
+      btn.style.transform='';
+      btn.style.transition='transform .5s cubic-bezier(.23,1,.32,1)';
+      setTimeout(()=>btn.style.transition='',500);
+    });
+  });
+}
+
 /* ── decrypt ── */
 function initDecrypt(){
   const pairs=[
@@ -264,15 +321,31 @@ function runDecrypt(uid,type,real){
 
 /* ── reveal ── */
 function initReveal(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('.rv').forEach(e=>{
+      e.classList.add('on');
+      e.querySelectorAll('[data-count]').forEach(countUp);
+    });
+    return;
+  }
+
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(e=>{
       if(!e.isIntersecting) return;
+      /* stagger siblings with data-stagger on parent */
+      const parent=e.target.parentElement;
+      if(parent && parent.dataset.stagger){
+        const kids=[...parent.children];
+        const idx=kids.indexOf(e.target);
+        e.target.style.animationDelay=(idx*parseFloat(parent.dataset.stagger))+'s';
+      }
       e.target.classList.add('on');
       e.target.querySelectorAll('.fill[data-w]').forEach(b=>{ b.style.width=b.dataset.w+'%'; });
       e.target.querySelectorAll('[data-count]').forEach(countUp);
       obs.unobserve(e.target);
     });
-  },{threshold:0,rootMargin:'0px 0px -20px 0px'});
+  },{threshold:0.08,rootMargin:'0px 0px -32px 0px'});
+
   document.querySelectorAll('.rv').forEach(e=>obs.observe(e));
 }
 
@@ -288,7 +361,8 @@ function countUp(el){
 
 /* ── typewriter ── */
 function initTW(p){
-  const phrases=[p.title,...p.interests.map(v=>v+' Enthusiast')];
+  const interests = (p.interests||[]).filter(Boolean);
+  const phrases=[p.title||'Developer',...interests.map(v=>v+' Enthusiast')];
   const tw=i('tw'); let pi=0,ci=0,del=false;
   (function tick(){
     const cur=phrases[pi];
@@ -360,8 +434,6 @@ function el(tag,cls=''){
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
-  let paused = false;
-  document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
 
   function spawnGeo(id,cfg){
     const canvas=document.getElementById(id);

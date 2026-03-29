@@ -1,0 +1,76 @@
+/* ── FONT AWESOME SUBSET ────────────────────────────────────────
+   Only the icons actually used on this page (~2 KB vs ~31 KB full)
+   Font files still served from cdnjs — only CSS is trimmed.
+   ─────────────────────────────────────────────────────────────── */
+
+   @font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Font Awesome 6 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2') format('woff2');
+  }
+  
+  /* ── Base classes ── */
+  .fas, .far, .fa-solid {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+  }
+  .fab, .fa-brands {
+    font-family: 'Font Awesome 6 Brands';
+    font-weight: 400;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+  }
+  
+  /* ── Solid icons ── */
+  .fa-arrow-up-right-from-square::before { content: "\f35d"; }
+  .fa-bug::before                         { content: "\f188"; }
+  .fa-chart-bar::before                   { content: "\f080"; }
+  .fa-chart-line::before                  { content: "\f201"; }
+  .fa-check-square::before                { content: "\f14a"; }
+  .fa-code::before                        { content: "\f121"; }
+  .fa-cogs::before                        { content: "\f085"; }
+  .fa-comments::before                    { content: "\f086"; }
+  .fa-file-alt::before                    { content: "\f15c"; }
+  .fa-file-excel::before                  { content: "\f1c3"; }
+  .fa-folder-open::before                 { content: "\f07c"; }
+  .fa-key::before                         { content: "\f084"; }
+  .fa-list-ol::before                     { content: "\f0cb"; }
+  .fa-lock::before                        { content: "\f023"; }
+  .fa-network-wired::before               { content: "\f6ff"; }
+  .fa-plug::before                        { content: "\f1e6"; }
+  .fa-robot::before                       { content: "\f544"; }
+  .fa-search::before                      { content: "\f002"; }
+  .fa-shield-alt::before                  { content: "\f3ed"; }
+  .fa-spider::before                      { content: "\f717"; }
+  .fa-table::before                       { content: "\f0ce"; }
+  .fa-terminal::before                    { content: "\f120"; }
+  .fa-tools::before                       { content: "\f7d9"; }
+  
+  /* ── Brand icons ── */
+  .fa-css3-alt::before  { content: "\f38b"; }
+  .fa-discord::before   { content: "\f392"; }
+  .fa-git-alt::before   { content: "\f841"; }
+  .fa-github::before    { content: "\f09b"; }
+  .fa-google::before    { content: "\f1a0"; }
+  .fa-html5::before     { content: "\f13b"; }
+  .fa-js::before        { content: "\f3b8"; }
+  .fa-linkedin::before  { content: "\f0e1"; }
+  .fa-python::before    { content: "\f3e2"; }
+  .fa-whatsapp::before  { content: "\f232"; }

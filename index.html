@@ -121,20 +121,38 @@
   <!-- Resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
-  <!-- Critical CSS — only local, no render block -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Critical CSS — inlined for zero render-block -->
+  <style>
+    :root{--bg:#070d1c;--vi:#3b82f6;--cy:#67e8f9;--pk:#f0abfc;--tx:#f0f4ff;--tx2:#b8c8e0;--tx3:#7888a8;--bdr:#1e2d4a;--bdr2:#2a3e62;--v06:rgba(59,130,246,.06);--v15:rgba(59,130,246,.15);--dsp:'Chakra Petch',sans-serif;--mono:'JetBrains Mono',monospace;--body:'Inter',sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#020b20;color:var(--tx);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    #hdr{position:fixed;top:0;left:0;right:0;z-index:50;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(7,13,28,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);border-radius:0 0 18px 18px}
+    #hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:64px 24px 36px;position:relative;overflow:hidden}
+    .hero-inner{position:relative;z-index:1;max-width:55%}
+    #hName{font-family:var(--dsp);font-weight:700;font-size:clamp(2rem,7vw,5rem);line-height:.95;letter-spacing:.03em;text-transform:uppercase;margin-bottom:25px}
+    #hName .n1{display:block;color:var(--tx)}
+    #hName .n2{display:block;color:transparent;-webkit-text-stroke:1.5px var(--vi)}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+    .rv.on{opacity:1;transform:none}
+    ::-webkit-scrollbar{width:2px}
+    ::-webkit-scrollbar-thumb{background:var(--vi)}
+  </style>
+
+  <!-- Full CSS — async, non-render-blocking -->
+  <link rel="stylesheet" href="assets/css/style.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="assets/css/style.css"></noscript>
 
   <!-- Fonts — fully async, font-display:swap prevents FOIT -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;600&display=swap"></noscript>
 
-  <!-- Font Awesome — fully async -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
+  <!-- Font Awesome subset — only icons used on this page (~2 KB vs ~31 KB) -->
+  <link rel="stylesheet" href="assets/css/icons.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="assets/css/icons.css"></noscript>
 
   <!-- Preload LCP image -->
   <link rel="preload" href="assets/image/profile.webp" as="image" type="image/webp" fetchpriority="high">
@@ -261,7 +279,7 @@
       <div id="aStats" class="rv">
         <div class="profile-wrap">
           <div class="profile-img">
-            <img src="assets/image/profile.webp" loading="lazy" decoding="async" width="400" height="400" alt="Bijay Koirala — Python Developer from Nepal"> alt="Bijay Koirala" loading="lazy">
+            <img src="assets/image/profile.webp" loading="lazy" decoding="async" width="400" height="400" alt="Bijay Koirala — Python Developer from Nepal">
           </div>
         </div>
       </div>
