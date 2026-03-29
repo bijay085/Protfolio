@@ -31,7 +31,12 @@ fetch(SRC)
     initGlitchPulse();
     document.getElementById('yr').textContent = new Date().getFullYear();
   })
-  .catch(e=>console.error('[bk]',e));
+  .catch(()=>{
+    /* silent fail — noscript fallback content is already visible */
+    document.querySelectorAll('#expList,#skBody,#prGrid,#svGrid').forEach(el=>{
+      if(el) el.innerHTML='<p style="font-family:var(--mono);font-size:.8rem;color:var(--tx3);padding:16px 0">Content unavailable. Please try refreshing.</p>';
+    });
+  });
 
 /* ── experience ── */
 function buildExperience(list){
@@ -49,7 +54,7 @@ function buildExperience(list){
         </div>
         <div class="exp-co">${e.company}</div>
         <p class="exp-desc">${e.description}</p>
-        <div class="exp-tags">${e.tags.map(t=>`<span class="etag">${t}</span>`).join('')}</div>
+        <div class="exp-tags">${(e.tags||[]).map(t=>`<span class="etag">${t}</span>`).join('')}</div>
       </div>`;
     const dot=`<div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div>`;
     return `<div class="exp-tl-row" data-side="${side}">
@@ -62,7 +67,7 @@ function buildExperience(list){
 
 /* ── skills ── */
 function buildSkills(data){
-  const wrap=i('skBody'); wrap.className='sk-hud-grid';
+  const wrap=i('skBody'); if(!wrap) return; wrap.className='sk-hud-grid';
 
   const colors = {
     'Languages':    {corner:'var(--vi)',  label:'var(--vi)'},
@@ -98,7 +103,7 @@ function buildSkills(data){
 
 /* ── projects ── */
 function buildProjects(list){
-  const grid=i('prGrid');
+  const grid=i('prGrid'); if(!grid) return;
   list.forEach(p=>{
     const {c,l}=getBadge(p.status,p.private);
     const card=el('div','pc rv');
@@ -148,7 +153,7 @@ function getPlinks(p){
 
 /* ── services ── */
 function buildServices(list){
-  const grid=i('svGrid');
+  const grid=i('svGrid'); if(!grid) return;
   list.forEach(s=>{
     const c=el('div','sc rv');
     c.innerHTML=`
@@ -299,6 +304,11 @@ function initToggle(){
   const tog=i('tog'), dr=i('drawer');
   tog.onclick=()=>{ const o=dr.classList.toggle('open'); tog.classList.toggle('open',o); };
 
+  /* close drawer with Escape key */
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape' && dr.classList.contains('open')) closeMenu();
+  });
+
   /* active link on scroll */
   const sections = ['about','experience','skills','projects','services','contact'];
   const navLinks  = document.querySelectorAll('#nav a[href^="#"], #drawer a[href^="#"]');
@@ -348,6 +358,7 @@ function el(tag,cls=''){
 
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
   let paused = false;
   document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
@@ -484,6 +495,7 @@ function el(tag,cls=''){
 
 /* ── EXTRA GEO INSTANCES ────────────────── */
 (function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa';
   const spawnGeo = window._spawnGeo;
 
@@ -577,6 +589,7 @@ function el(tag,cls=''){
 
 /* ── Floating background particles on each section ── */
 function initSectionBg(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const IDS    = ['about','experience','skills','projects','services','contact'];
   const COLORS = ['#3b82f6','#67e8f9','#a78bfa'];
   const COUNT  = 8;

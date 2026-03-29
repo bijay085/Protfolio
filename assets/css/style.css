@@ -678,6 +678,11 @@ section::after {
   color:var(--cc);
   border-color:var(--cc);
   background:rgba(59,130,246,.05);
+  animation: skFlicker .12s steps(1) 4;
+}
+@keyframes skFlicker {
+  0%,100% { opacity:1; }
+  50%     { opacity:.4; }
 }
 
 /* ── PROJECTS ───────────────────────────── */
@@ -746,6 +751,11 @@ section::after {
   width:36px; height:36px; display:flex; align-items:center; justify-content:center;
   background:var(--v06); border:1px solid var(--v15); color:var(--vi); font-size:.76rem;
   margin-bottom:12px; transition:all .18s; border-radius:8px;
+  animation: siIdle 3s ease-in-out infinite;
+}
+@keyframes siIdle {
+  0%,100% { box-shadow: 0 0 0px rgba(59,130,246,0); }
+  50%     { box-shadow: 0 0 12px rgba(59,130,246,.25); }
 }
 .sc:hover .si { background:var(--vi); color:#000; border-color:var(--vi); }
 .stt { font-family:var(--dsp); font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--cy); margin-bottom:8px; }
@@ -793,7 +803,8 @@ section::after {
 .ct-status-dot {
   width:7px; height:7px; border-radius:50%;
   background:#34d399; flex-shrink:0;
-  animation:ctPulse 2s ease-in-out infinite;
+  animation: ctPulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 6px #34d399;
 }
 @keyframes ctPulse {
   0%,100%{opacity:1} 50%{opacity:.3}
@@ -818,7 +829,68 @@ section::after {
 #foot p { font-family:var(--mono); font-size:.78rem; letter-spacing:.1em; color:var(--tx2); line-height:2; }
 #foot span { color:var(--vi); }
 
-/* ── KEYFRAMES ──────────────────────────── */
+/* ── WILL-CHANGE — promote animated elements to own layer ── */
+.profile-img::before,
+.profile-img::after    { will-change: transform; }
+.exp-tl-dot            { will-change: box-shadow; }
+.exp-tl-spine          { will-change: background-position; }
+#hStatus::before       { will-change: opacity, transform; }
+.caret                 { will-change: opacity; }
+.sys-badge             { will-change: opacity; }
+
+/* ── FOCUS VISIBLE — keyboard navigation ── */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--vi);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+#nav a:focus-visible {
+  outline: 2px solid var(--vi);
+  outline-offset: 2px;
+  border-radius: 100px;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--cy);
+  outline-offset: 3px;
+}
+.sk-hud-item:focus-visible,
+.chip:focus-visible,
+.tg:focus-visible,
+.etag:focus-visible {
+  outline: 1px solid var(--vi);
+  outline-offset: 2px;
+  color: var(--vi);
+  border-color: var(--vi);
+}
+.ct-sb:focus-visible {
+  outline: 2px solid var(--vi);
+  outline-offset: 3px;
+  border-color: var(--vi);
+}
+
+/* ── PREFERS REDUCED MOTION — kill all animations ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .profile-img::before,
+  .profile-img::after { animation: none !important; }
+  .exp-tl-dot         { animation: none !important; }
+  .exp-tl-spine       { animation: none !important; background: var(--bdr) !important; }
+  .sys-badge          { animation: none !important; opacity: 1 !important; }
+  .caret              { animation: none !important; opacity: 1 !important; }
+  #hStatus::before    { animation: none !important; opacity: 1 !important; }
+  .ct-status-dot      { animation: none !important; }
+  .si                 { animation: none !important; }
+  .sh-t.gl::before,
+  .sh-t.gl::after     { animation: none !important; opacity: 0 !important; }
+  .rv                 { opacity: 1 !important; transform: none !important; }
+}
 @keyframes blink  { 0%,100%{opacity:1} 50%{opacity:0} }
 @keyframes pulse  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.8)} }
 @keyframes gA { 0%,93%,100%{transform:none;opacity:0} 94%{transform:translate(-3px,1px);opacity:.55} 96%{transform:translate(2px,-1px);opacity:.55} 97%{transform:none;opacity:0} }
@@ -963,17 +1035,6 @@ section::after {
   95%         { transform:none; opacity:0; }
 }
 
-/* ── SKILL ITEM FLICKER ON HOVER ── */
-.sk-hud-item:hover {
-  animation: skFlicker .12s steps(1) 4;
-  color: var(--cc);
-  border-color: var(--cc);
-}
-@keyframes skFlicker {
-  0%,100% { opacity:1; }
-  50%     { opacity:.4; }
-}
-
 /* ── SECTION BG CANVAS ── */
 .sec-bg-canvas {
   position: absolute;
@@ -1000,19 +1061,4 @@ section::after {
 @keyframes spineFlow {
   0%   { background-position: 0 0%; }
   100% { background-position: 0 100%; }
-}
-
-/* ── CONTACT STATUS DOT — more alive ── */
-.ct-status-dot {
-  animation: ctPulse 1.4s ease-in-out infinite !important;
-  box-shadow: 0 0 6px #34d399;
-}
-
-/* ── SERVICE ICON IDLE PULSE ── */
-.si {
-  animation: siIdle 3s ease-in-out infinite;
-}
-@keyframes siIdle {
-  0%,100% { box-shadow: 0 0 0px rgba(59,130,246,0); }
-  50%     { box-shadow: 0 0 12px rgba(59,130,246,.25); }
 }

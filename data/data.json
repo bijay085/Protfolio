@@ -257,7 +257,9 @@
       ]
     },
     {
+      "id": 7,
       "title": "ClickSync",
+      "category": "automation",
       "description": "Automated bridge between ClickUp and Google Sheets using Apps Script. Change one, both update. Eliminates the multiple-entry problem for teams.",
       "technologies": [
         "Apps Script",
@@ -267,6 +269,8 @@
       ],
       "status": "active",
       "private": false,
+      "featured": true,
+      "date": "2025-06",
       "github": "https://github.com/bijay085",
       "demo": null
     }
