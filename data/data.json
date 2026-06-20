@@ -207,7 +207,7 @@
       "id": 3,
       "title": "CMS Platform",
       "category": "web",
-      "description": "Static but full-featured CMS. Entirely JSON-based \u2014 update content without touching the codebase. Deployed and live.",
+      "description": "Static but full-featured CMS. Entirely JSON-based, update content without touching the codebase. Deployed and live.",
       "technologies": [
         "HTML/CSS/JS",
         "JSON"
@@ -287,7 +287,7 @@
         "Real-time monitoring",
         "Data cleaning"
       ],
-      "price_range": "$15 \u2014 $200"
+      "price_range": "$15, $200"
     },
     {
       "id": 2,
@@ -300,7 +300,7 @@
         "Auto-moderation",
         "Analytics"
       ],
-      "price_range": "$15 \u2014 $100"
+      "price_range": "$15, $100"
     },
     {
       "id": 3,
@@ -313,7 +313,7 @@
         "Report generation",
         "Scheduled tasks"
       ],
-      "price_range": "$20 \u2014 $200"
+      "price_range": "$20, $200"
     },
     {
       "id": 4,
@@ -326,7 +326,7 @@
         "Visualisation",
         "Reporting"
       ],
-      "price_range": "$100 \u2014 $800"
+      "price_range": "$100, $800"
     },
     {
       "id": 5,
@@ -339,7 +339,7 @@
         "Bug hunting",
         "Documentation"
       ],
-      "price_range": "$100 \u2014 $800"
+      "price_range": "$100, $800"
     },
     {
       "id": 6,
@@ -352,14 +352,14 @@
         "Tool recommendations",
         "Learning together"
       ],
-      "price_range": "$50 \u2014 $150/hr"
+      "price_range": "$50, $150/hr"
     }
   ],
   "experience": [
     {
       "role": "SEO Trainee",
       "company": "Running",
-      "date": "Mar 2026 \u2014 Present",
+      "date": "Mar 2026 to Present",
       "color": "vi",
       "description": "Working on traffic strategy, on-page SEO and content performance for an ecommerce team.",
       "tags": [
@@ -372,7 +372,7 @@
     {
       "role": "SEO Intern",
       "company": "Internship",
-      "date": "Dec 2025 \u2014 Mar 2026",
+      "date": "Dec 2025, Mar 2026",
       "color": "cy",
       "description": "Technical SEO audits, keyword research and on-page improvements as part of a structured internship.",
       "tags": [
@@ -384,7 +384,7 @@
     {
       "role": "Freelance Developer",
       "company": "Self-employed",
-      "date": "2025 \u2014 Present (Occasionally)",
+      "date": "2025 to Present (Occasionally)",
       "color": "pk",
       "description": "Built and delivered automation tools, bots, scrapers and scripts for clients. 20+ projects completed.",
       "tags": [
@@ -399,7 +399,7 @@
     {
       "degree": "Bachelor in Computer Application",
       "institution": "Nepal Mega College",
-      "period": "2021 \u2014 2026",
+      "period": "2021, 2026",
       "status": "Pursuing"
     }
   ],
