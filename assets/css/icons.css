@@ -23,7 +23,11 @@
   font-variant: normal;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-  display: inline-block
+  display: inline-block;
+  /* fixed box so the glyph swap after the icon font loads cannot shift text */
+  width: 1.25em;
+  text-align: center;
+  line-height: 1
 }
 
 .fab,
@@ -34,15 +38,83 @@
   font-variant: normal;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-  display: inline-block
+  display: inline-block;
+  /* fixed box so the glyph swap after the icon font loads cannot shift text */
+  width: 1.25em;
+  text-align: center;
+  line-height: 1
 }
 
 .fa-arrow-up-right-from-square::before {
   content: "\f35d"
 }
 
-.fa-bug::before {
-  content: "\f188"
+.fa-envelope::before {
+  content: "\f0e0"
+}
+
+.fa-bullseye::before {
+  content: "\f140"
+}
+
+.fa-chart-area::before {
+  content: "\f1fe"
+}
+
+.fa-compass::before {
+  content: "\f14e"
+}
+
+.fa-edit::before {
+  content: "\f044"
+}
+
+.fa-globe::before {
+  content: "\f0ac"
+}
+
+.fa-layer-group::before {
+  content: "\f5fd"
+}
+
+.fa-map::before {
+  content: "\f279"
+}
+
+.fa-mobile-screen-button::before {
+  content: "\f3cd"
+}
+
+.fa-project-diagram::before {
+  content: "\f542"
+}
+
+.fa-shopping-cart::before {
+  content: "\f07a"
+}
+
+.fa-link::before {
+  content: "\f0c1"
+}
+
+.fa-database::before {
+  content: "\f1c0"
+}
+
+.fa-brain::before {
+  content: "\f5dc"
+}
+
+.fa-right-left::before {
+  content: "\f362"
+}
+
+.fa-sitemap::before {
+  content: "\f0e8"
+}
+
+.fa-store::before {
+  content: "\f54e"
 }
 
 .fa-chart-bar::before {
@@ -53,10 +125,6 @@
   content: "\f201"
 }
 
-.fa-check-square::before {
-  content: "\f14a"
-}
-
 .fa-code::before {
   content: "\f121"
 }
@@ -65,16 +133,8 @@
   content: "\f085"
 }
 
-.fa-comments::before {
-  content: "\f086"
-}
-
 .fa-file-alt::before {
   content: "\f15c"
-}
-
-.fa-file-excel::before {
-  content: "\f1c3"
 }
 
 .fa-folder-open::before {
@@ -93,10 +153,6 @@
   content: "\f023"
 }
 
-.fa-network-wired::before {
-  content: "\f6ff"
-}
-
 .fa-plug::before {
   content: "\f1e6"
 }
@@ -107,10 +163,6 @@
 
 .fa-search::before {
   content: "\f002"
-}
-
-.fa-shield-alt::before {
-  content: "\f3ed"
 }
 
 .fa-spider::before {
@@ -125,20 +177,12 @@
   content: "\f120"
 }
 
-.fa-tools::before {
-  content: "\f7d9"
-}
-
-.fa-css3-alt::before {
-  content: "\f38b"
-}
-
 .fa-discord::before {
   content: "\f392"
 }
 
-.fa-git-alt::before {
-  content: "\f841"
+.fa-chrome::before {
+  content: "\f268"
 }
 
 .fa-github::before {
@@ -147,10 +191,6 @@
 
 .fa-google::before {
   content: "\f1a0"
-}
-
-.fa-html5::before {
-  content: "\f13b"
 }
 
 .fa-js::before {
@@ -167,4 +207,8 @@
 
 .fa-whatsapp::before {
   content: "\f232"
+}
+
+.fa-wordpress::before {
+  content: "\f19a"
 }

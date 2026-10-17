@@ -1,9 +1,5 @@
 User-agent: *
 Allow: /
 
-# Block crawlers from assets that add no value
-Disallow: /favicon_io/
-Disallow: /data/
-
 # Sitemap
 Sitemap: https://bijaykoirala0.com.np/sitemap.xml

@@ -1,29 +1,8 @@
 'use strict';
 
-/* try data/data.json first, fall back to data.json at root */
-const SRC_PATHS = ['data/data.json', 'data.json'];
-const SC   = '!#%ABCDEFabcdef0123456789';
 let paused = false;
 const VW = window.innerWidth; /* read once — avoids forced reflow on each check */
 document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
-
-/* ── hero entrance — fires immediately on load ── */
-(function initHero(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const order=[
-    {sel:'#hStatus',  cls:'hero-in-down', delay:100},
-    {sel:'#hName',    cls:'hero-in-up',   delay:280},
-    {sel:'#hRole',    cls:'hero-in-up',   delay:500},
-    {sel:'#hDesc',    cls:'hero-in-up',   delay:640},
-    {sel:'#hCta',     cls:'hero-in-up',   delay:780},
-  ];
-  order.forEach(({sel,cls,delay})=>{
-    const el=document.querySelector(sel);
-    if(!el) return;
-    el.classList.add('hero-pre');
-    setTimeout(()=>el.classList.add(cls),delay);
-  });
-})();
 
 /* ── spine draw on scroll ── */
 function initSpineDraw(){
@@ -38,271 +17,25 @@ function initSpineDraw(){
   obs.observe(spine);
 }
 
-/* ── init ── */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    e.preventDefault();
-    const id = a.getAttribute('href').replace('#','');
-    if(!id) return;
-    const el = document.getElementById(id);
-    if(el) el.scrollIntoView({behavior:'smooth'});
-  });
-});
+/* ── init ──
+   in-page anchors use native navigation + CSS smooth scroll, so the skip link moves focus and the URL hash updates.
+   all content is static HTML; JS only adds motion and interactions */
+initSpineDraw();
+initTW();
+initReveal();
+initToggle();
+initSectionBg();
+initGlitchPulse();
+initMagnetic();
+initCursorTrail();
+document.getElementById('yr').textContent = new Date().getFullYear();
+updateNPTime();
+setInterval(updateNPTime, 1000);
 
-/* use inline data if available, else fetch as fallback */
-const dataPromise = window.__D
-  ? Promise.resolve(window.__D)
-  : fetch(SRC_PATHS[0]).then(r=>r.ok?r:fetch(SRC_PATHS[1])).then(r=>r.json());
-
-dataPromise
-  .then(d=>{
-    buildSkills(d.skills);
-    buildExperience(d.experience);
-    buildProjects(d.projects);
-    buildServices(d.services);
-    buildContact(d.contact);
-    buildStats(d.stats);
-    initReveal();
-    initSpineDraw();
-    initTW(d.personal);
-    initToggle();
-    initDecrypt();
-    initSectionBg();
-    initGlitchPulse();
-    initMagnetic();
-    initCursorTrail();
-    initSectionNumbers();
-    document.getElementById('yr').textContent = new Date().getFullYear();
-
-    /* scroll progress bar */
-    const spr = i('spr');
-    if(spr){
-      window.addEventListener('scroll',()=>{
-        const max = document.body.scrollHeight - window.innerHeight;
-        spr.style.width = (window.scrollY / max * 100).toFixed(1)+'%';
-      },{passive:true});
-    }
-
-    /* live Nepal time */
-    function updateNPTime(){
-      const el = document.getElementById('npTime');
-      if(!el) return;
-      const now = new Date();
-      const np = new Date(now.toLocaleString('en-US',{timeZone:'Asia/Kathmandu'}));
-      const h = np.getHours(), m = np.getMinutes(), s = np.getSeconds();
-      const pad = n => String(n).padStart(2,'0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      const h12 = h % 12 || 12;
-      el.textContent = `${pad(h12)}:${pad(m)}:${pad(s)} ${ampm} NPT`;
-    }
-    updateNPTime();
-    setInterval(updateNPTime, 1000);
-  })
-  .catch(()=>{
-    /* silent fail — noscript fallback content is already visible */
-    document.querySelectorAll('#expList,#skBody,#prGrid,#svGrid').forEach(el=>{
-      if(el) el.innerHTML='<p style="font-family:var(--mono);font-size:.8rem;color:var(--tx3);padding:16px 0">Content unavailable. Please try refreshing.</p>';
-    });
-  });
-
-/* ── experience ── */
-function buildExperience(list){
-  const wrap=i('expList'); if(!wrap) return;
-  wrap.className='exp-timeline rv';
-  wrap.innerHTML=`<div class="exp-tl-spine"></div>`+list.map((e,idx)=>{
-    const side = idx%2===0 ? 'left' : 'right';
-    const box=`
-      <div class="exp-hud ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}">
-        <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
-        <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        <div class="exp-hud-top">
-          <span class="exp-role">${e.role}</span>
-          <span class="exp-date">${e.date}</span>
-        </div>
-        <div class="exp-co">${e.company}</div>
-        <p class="exp-desc">${e.description}</p>
-        ${(e.bullets||[]).length?`<ul class="exp-bullets">${e.bullets.map(b=>`<li><span class="bul">&#10095;</span>${b}</li>`).join('')}</ul>`:''}
-        <div class="exp-tags">${(e.tags||[]).map(t=>`<span class="etag">${t}</span>`).join('')}</div>
-      </div>`;
-    return `<div class="exp-tl-row rv ${side==='left'?'rv-left':'rv-right'}" data-side="${side}">
-      ${side==='left'
-        ? `<div class="exp-tl-cell-box">${box}</div><div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div><div class="exp-tl-cell-empty"></div>`
-        : `<div class="exp-tl-cell-empty"></div><div class="exp-tl-dot-wrap"><div class="exp-tl-dot ${e.color==='cy'?'cy':e.color==='pk'?'pk':''}"></div></div><div class="exp-tl-cell-box">${box}</div>`}
-    </div>`;
-  }).join('');
-}
-
-/* ── skills ── */
-function buildSkills(data){
-  const wrap=i('skBody'); if(!wrap) return; wrap.className='sk-hud-grid'; wrap.dataset.stagger='0.08';
-
-  const colors = {
-    'Languages':    {corner:'var(--vi)',  label:'var(--vi)'},
-    'Tools & Dev':  {corner:'var(--cy)',  label:'var(--cy)'},
-    'SEO':          {corner:'#f472b6',    label:'#f472b6'},
-    'Web Security': {corner:'#fb923c',    label:'#fb923c'},
-    'Productivity': {corner:'#a78bfa',    label:'#a78bfa'},
-  };
-
-  Object.entries(data).forEach(([grp,items])=>{
-    const vis=(items||[]).filter(s=>s.level>0);
-    if(!vis.length) return;
-    const col = colors[grp] || {corner:'var(--vi)',label:'var(--vi)'};
-    const box = el('div','sk-hud-box rv rv-up');
-    box.style.setProperty('--cc', col.corner);
-    box.innerHTML=`
-      <div class="sk-hud-corner tl"></div>
-      <div class="sk-hud-corner tr"></div>
-      <div class="sk-hud-corner bl"></div>
-      <div class="sk-hud-corner br"></div>
-      <div class="sk-hud-title">${grp}</div>
-      <div class="sk-hud-items">
-        ${vis.map(s=>`
-          <span class="sk-hud-item">
-            ${s.icon?`<i class="${s.icon} sk-icon"></i>`:''}${s.name}
-          </span>
-        `).join('')}
-      </div>
-    `;
-    wrap.append(box);
-  });
-}
-
-/* ── projects ── */
-function buildProjects(list){
-  const grid=i('prGrid'); if(!grid) return;
-  grid.dataset.stagger='0.07';
-  list.forEach(p=>{
-    const {c,l}=getBadge(p.status,p.private);
-    const card=el('div','pc rv rv-up');
-    card.innerHTML=`
-      <div class="c-tl"></div><div class="c-tr"></div>
-      <div class="c-bl"></div><div class="c-br"></div>
-      <div class="pr">
-        <span class="pt">${p.title}</span>
-        <span class="pb ${c}">${l}</span>
-      </div>
-      <p class="pd">${p.description}</p>
-      <div class="techs">
-        ${p.technologies.map(t=>`<span class="tg">${t}</span>`).join('')}
-        ${(p.tags||[]).map(t=>`<span class="tg ${t==='Dead'?'dead':t==='1st Project'||t==='2nd Project'?'special':''}">${t}</span>`).join('')}
-      </div>
-      <div class="pls">${getPlinks(p)}</div>
-    `;
-    grid.append(card);
-  });
-  const wip=el('div','pc dash rv rv-up');
-  wip.innerHTML=`
-    <div class="c-tl"></div><div class="c-tr"></div>
-    <div class="c-bl"></div><div class="c-br"></div>
-    <div class="pr"><span class="pt dm">More Building...</span><span class="pb wip">WIP</span></div>
-    <p class="pd dm">More tools in progress. Proxy checkers, security scripts and automation utilities. Always something running in the background.</p>
-    <div class="pls"><a href="https://github.com/bijay085" target="_blank" rel="noopener noreferrer" class="pl"><i class="fab fa-github"></i>All Repos</a></div>
-  `;
-  grid.append(wip);
-}
-
-function getBadge(s,priv){
-  if(priv) return {c:'prv',l:'Private'};
-  const v=Array.isArray(s)?s[0]:s;
-  if(v==='active')    return {c:'act',l:'Active'};
-  if(v==='completed') return {c:'don',l:'Done'};
-  return {c:'don',l:v||'Done'};
-}
-
-function getPlinks(p){
-  if(p.private||(!p.github&&!p.demo))
-    return `<span class="pl lk"><i class="fas fa-lock"></i>Private</span>`;
-  let h='';
-  if(p.github) h+=`<a href="${p.github}" target="_blank" rel="noopener noreferrer" class="pl"><i class="fab fa-github"></i>GitHub</a>`;
-  if(p.demo)   h+=`<a href="${p.demo}"   target="_blank" rel="noopener noreferrer" class="pl"><i class="fas fa-arrow-up-right-from-square"></i>Live</a>`;
-  return h;
-}
-
-/* ── services ── */
-function buildServices(list){
-  const grid=i('svGrid'); if(!grid) return;
-  grid.dataset.stagger='0.07';
-  list.forEach(s=>{
-    const c=el('div','sc rv rv-up');
-    c.innerHTML=`
-      <div class="c-tl"></div><div class="c-tr"></div>
-      <div class="c-bl"></div><div class="c-br"></div>
-      <div class="si"><i class="${s.icon}"></i></div>
-      <div class="stt">${s.title}</div>
-      <p class="sd">${s.description}</p>
-      <div class="sp">${s.price_range}</div>
-    `;
-    grid.append(c);
-  });
-}
-
-/* ── contact ── */
-function buildContact(c){
-  const bar = i('ctInfoBar');
-  const grid = i('ctSocialGrid');
-  if(!bar||!grid) return;
-
-  bar.className='ct-info-bar rv';
-  bar.innerHTML=`
-    <div class="ct-field">
-      <div class="ct-label">Email</div>
-      <div class="ct-val" id="demailw">
-        <span id="demailt">${c.email_b64}</span>
-        <span class="db" id="demailb">Decrypt</span>
-      </div>
-    </div>
-    <div class="ct-field">
-      <div class="ct-label">Phone</div>
-      <div class="ct-val" id="dphonew">
-        <span id="dphonet">${c.phone_b64}</span>
-        <span class="db" id="dphoneb">Decrypt</span>
-      </div>
-    </div>
-    <div class="ct-field">
-      <div class="ct-label">Location</div>
-      <div class="ct-val plain">${c.location} · ${c.timezone}</div>
-    </div>
-    <div class="ct-field">
-      <div class="ct-label">Response</div>
-      <div class="ct-val green">${c.response}</div>
-    </div>
-    <div class="ct-field">
-      <div class="ct-label">Status</div>
-      <div class="ct-val green">
-        <span class="ct-status-dot"></span>${c.status}
-      </div>
-    </div>
-  `;
-
-  grid.className='ct-social-grid rv';
-  grid.innerHTML=c.socials.map(s=>`
-    <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="ct-sb">
-      <i class="${s.icon} ct-sb-icon"></i>
-      <span class="ct-sb-name">${s.name}</span>
-    </a>
-  `).join('');
-}
-
-/* ── stats ── */
-function buildStats(s){
-  if(!s) return;
-  let months = 0;
-  if(s.freelance_start){
-    const [y,m] = s.freelance_start.split('-').map(Number);
-    const start = new Date(y, m-1, 1);
-    const now   = new Date();
-    months = (now.getFullYear()-start.getFullYear())*12 + (now.getMonth()-start.getMonth());
-    months = Math.max(1, months);
-  }
-  const map = [
-    {count: s.projects_completed},
-    {count: s.clients_served},
-    {count: months},
-  ];
-  document.querySelectorAll('.sv[data-count]').forEach((el,idx)=>{
-    if(map[idx]) el.dataset.count = map[idx].count;
-  });
+/* live Nepal time */
+function updateNPTime(){
+  const el = document.getElementById('npTime');
+  if(el) el.textContent = new Date().toLocaleTimeString('en-US',{timeZone:'Asia/Kathmandu',hour:'2-digit',minute:'2-digit',second:'2-digit'})+' NPT';
 }
 
 /* ── magnetic buttons ── */
@@ -321,46 +54,6 @@ function initMagnetic(){
       setTimeout(()=>btn.style.transition='',500);
     });
   });
-}
-
-/* ── decrypt ── */
-function initDecrypt(){
-  const pairs=[
-    {uid:'demail', type:'email', real:'bijaykoirala003@gmail.com'},
-    {uid:'dphone', type:'phone', real:'+9779746665541'},
-  ];
-  pairs.forEach(({uid,type,real})=>{
-    i(`${uid}w`).onclick=()=>runDecrypt(uid,type,real);
-  });
-}
-
-function runDecrypt(uid,type,real){
-  const w=i(`${uid}w`),t=i(`${uid}t`),b=i(`${uid}b`);
-  if(!b||b.classList.contains('done')) return;
-  w.onclick=null; b.textContent='...';
-  let x=0;
-  const iv=setInterval(()=>{
-    t.textContent=real.split('').map((_,j)=>
-      j<x?real[j]:SC[Math.floor(Math.random()*SC.length)]
-    ).join('');
-    x+=2;
-    if(x>=real.length){
-      clearInterval(iv);
-      b.textContent='Done'; b.classList.add('done');
-      w.innerHTML=`
-        <a href="${type==='email'?'mailto:':'tel:'}${real}" style="color:var(--vi);font-family:var(--mono);font-size:1rem">${real}</a>
-        <span class="cp-btn" data-val="${real}" title="Copy">&#x2398;</span>
-      `;
-      w.querySelector('.cp-btn').onclick=e=>{
-        e.stopPropagation();
-        navigator.clipboard.writeText(real).then(()=>{
-          const btn=w.querySelector('.cp-btn');
-          btn.textContent='✓'; btn.style.color='#34d399';
-          setTimeout(()=>{ btn.innerHTML='&#x2398;'; btn.style.color=''; },1800);
-        });
-      };
-    }
-  },28);
 }
 
 /* ── reveal ── */
@@ -384,7 +77,6 @@ function initReveal(){
         e.target.style.animationDelay=(idx*parseFloat(parent.dataset.stagger))+'s';
       }
       e.target.classList.add('on');
-      e.target.querySelectorAll('.fill[data-w]').forEach(b=>{ b.style.width=b.dataset.w+'%'; });
       e.target.querySelectorAll('[data-count]').forEach(countUp);
       obs.unobserve(e.target);
     });
@@ -404,12 +96,13 @@ function countUp(el){
 }
 
 /* ── typewriter ── */
-function initTW(p){
-  const interests = (p.interests||[]).filter(Boolean);
-  const phrases=[p.title||'Developer',...interests.map(v=>v+' Enthusiast')];
-  const tw=i('tw'); let pi=0,ci=0,del=false;
+function initTW(){
+  const tw=i('tw');
+  if(!tw || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const phrases=tw.dataset.phrases.split('|');
+  let pi=0,ci=phrases[0].length,del=true;
   const GLITCH='@#$%&!?';
-  (function tick(){
+  setTimeout(function tick(){
     const cur=phrases[pi];
     del?(tw.textContent=cur.slice(0,--ci)):(tw.textContent=cur.slice(0,++ci));
     /* random glitch frame mid-type — 6% chance, only while typing forward */
@@ -423,7 +116,7 @@ function initTW(p){
     if(!del&&ci===cur.length){ del=true; setTimeout(tick,2200); return; }
     if(del&&ci===0){ del=false; pi=(pi+1)%phrases.length; }
     setTimeout(tick,del?45:75);
-  })();
+  }, 2200); /* first phrase is already in the HTML */
 }
 
 /* ── nav toggle ── */
@@ -441,7 +134,7 @@ function initToggle(){
   });
 
   /* active link on scroll */
-  const sections = ['about','experience','skills','projects','services','contact'];
+  const sections = ['about','experience','results','skills','projects','services','faq','contact'];
   const navLinks  = document.querySelectorAll('#nav a[href^="#"], #drawer a[href^="#"]');
 
   function setActive(id){
@@ -451,7 +144,8 @@ function initToggle(){
   }
 
   function onScroll(){
-    const scrollY = window.scrollY + 80;
+    /* a section is "current" once its top passes the upper third of the viewport */
+    const scrollY = window.scrollY + window.innerHeight * .35;
     const atBottom = window.scrollY + window.innerHeight >= document.body.scrollHeight - 10;
     let current = '';
     sections.forEach(id=>{
@@ -463,13 +157,7 @@ function initToggle(){
   }
 
   navLinks.forEach(a=>{
-    a.addEventListener('click', e=>{
-      e.preventDefault();
-      const id = a.getAttribute('href').replace('#','');
-      const el = document.getElementById(id);
-      if(el) el.scrollIntoView({behavior:'smooth'});
-      setActive(id);
-    });
+    a.addEventListener('click', ()=>setActive(a.getAttribute('href').slice(1)));
   });
 
   let scrollTimer;
@@ -496,17 +184,16 @@ function closeMenu(){
 
 /* ── utils ── */
 function i(id){ return document.getElementById(id); }
-function el(tag,cls=''){
-  const e=document.createElement(tag);
-  if(cls) e.className=cls;
-  return e;
-}
 
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const isMobile = VW < 768;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
+  /* idle the hero canvases once the hero is scrolled out of view */
+  let heroOff = false;
+  const hero = document.getElementById('hero');
+  if(hero) new IntersectionObserver(e=>{ heroOff = !e[0].isIntersecting; }).observe(hero);
 
   function spawnGeo(id,cfg){
     const canvas=document.getElementById(id);
@@ -542,6 +229,7 @@ function el(tag,cls=''){
 
     let t=cfg.tOffset||0;
     function frame(){
+      if(paused || heroOff){ setTimeout(frame,200); return; }
       ctx.clearRect(0,0,W,H);
 
       /* rings — boosted alpha */
@@ -608,8 +296,7 @@ function el(tag,cls=''){
       ctx.beginPath(); ctx.arc(cx,cy,2.5*s,0,Math.PI*2);
       ctx.fillStyle=CYAN; ctx.globalAlpha=.5; ctx.fill(); ctx.globalAlpha=1;
       t+=.012;
-      if(!paused) requestAnimationFrame(frame);
-      else setTimeout(frame, 200);
+      requestAnimationFrame(frame);
     }
     frame();
   }
@@ -759,6 +446,7 @@ function initSectionBg(){
     }
 
     function frame(){
+      if(document.hidden || !onScreen){ setTimeout(frame,200); return; }
       if(!W || !H){ requestAnimationFrame(frame); return; } /* wait for ResizeObserver */
       ctx.clearRect(0,0,W,H);
       drawLines();
@@ -774,32 +462,21 @@ function initSectionBg(){
         ctx.fillStyle=p.c; ctx.globalAlpha=p.a; ctx.fill();
         ctx.globalAlpha=1;
       });
-      if(!document.hidden) requestAnimationFrame(frame);
-      else setTimeout(frame,200);
+      requestAnimationFrame(frame);
     }
 
+    let onScreen = false;
+    new IntersectionObserver(e=>{ onScreen = e[0].isIntersecting; }).observe(sec);
     const ro = new ResizeObserver(resize);
     ro.observe(sec); /* triggers resize() with contentRect, sets W/H */
     frame();
   });
 }
 
-/* ── Random glitch bursts on section headings ── */
-function initSectionNumbers(){
-  const sections = ['about','experience','skills','projects','services','contact'];
-  sections.forEach((id,idx)=>{
-    const sh = document.querySelector(`#${id} .sh`);
-    if(!sh) return;
-    const num = document.createElement('span');
-    num.className = 'sh-num';
-    num.textContent = String(idx+1).padStart(2,'0');
-    sh.prepend(num);
-  });
-}
-
 function initCursorTrail(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(VW < 768) return; /* desktop only */
+  /* mouse only — on touch tablets the dots never move and sit stuck in the top-left corner */
+  if(VW < 768 || !window.matchMedia('(pointer: fine)').matches) return;
   const TRAIL_COUNT = 10;
   const dots = Array.from({length:TRAIL_COUNT},()=>{
     const d = document.createElement('div');
