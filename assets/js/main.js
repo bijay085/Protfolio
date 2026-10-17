@@ -23,14 +23,57 @@ function initSpineDraw(){
 initSpineDraw();
 initTW();
 initReveal();
+initExperienceReadMore();
+initAboutReadMore();
 initToggle();
 initSectionBg();
 initGlitchPulse();
 initMagnetic();
 initCursorTrail();
-document.getElementById('yr').textContent = new Date().getFullYear();
 updateNPTime();
 setInterval(updateNPTime, 1000);
+
+/* ── mobile Experience summaries ── */
+function initExperienceReadMore(){
+  document.querySelectorAll('#experience .exp-hud').forEach(card=>{
+    if(card.querySelector('.exp-more')) return;
+    const desc=card.querySelector('.exp-desc');
+    const bullets=card.querySelector('.exp-bullets');
+    if(!desc || (!bullets && desc.textContent.trim().length<150)) return;
+
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='exp-more';
+    button.setAttribute('aria-expanded','false');
+    button.textContent='Read more';
+    card.append(button);
+
+    button.addEventListener('click',()=>{
+      const expanded=card.classList.toggle('is-expanded');
+      button.setAttribute('aria-expanded',String(expanded));
+      button.textContent=expanded?'Show less':'Read more';
+    });
+  });
+}
+
+/* ── mobile About summary ── */
+function initAboutReadMore(){
+  const about=document.querySelector('#aText');
+  if(!about || about.querySelector('.about-more')) return;
+
+  const button=document.createElement('button');
+  button.type='button';
+  button.className='about-more';
+  button.setAttribute('aria-expanded','false');
+  button.textContent='Read more';
+  about.append(button);
+
+  button.addEventListener('click',()=>{
+    const expanded=about.classList.toggle('is-expanded');
+    button.setAttribute('aria-expanded',String(expanded));
+    button.textContent=expanded?'Show less':'Read more';
+  });
+}
 
 /* live Nepal time */
 function updateNPTime(){
@@ -126,7 +169,15 @@ function initToggle(){
     const o=dr.classList.toggle('open');
     tog.classList.toggle('open',o);
     tog.setAttribute('aria-expanded', String(o));
+    tog.setAttribute('aria-label',o?'Close navigation menu':'Open navigation menu');
   };
+
+  /* close the mobile navigation when the user taps outside it */
+  document.addEventListener('pointerdown',e=>{
+    if(!dr.classList.contains('open')) return;
+    if(dr.contains(e.target)||tog.contains(e.target)) return;
+    closeMenu();
+  });
 
   /* close drawer with Escape key */
   document.addEventListener('keydown', e=>{
@@ -173,13 +224,21 @@ function initToggle(){
       btt.classList.toggle('show', window.scrollY > 400);
     },{passive:true});
     btt.onclick = ()=> window.scrollTo({top:0,behavior:'smooth'});
+    const foot = i('foot');
+    if(foot && 'IntersectionObserver' in window){
+      new IntersectionObserver(([e])=> btt.classList.toggle('at-foot', e.isIntersecting))
+        .observe(foot);
+    }
   }
 }
 function closeMenu(){
   const dr=i('drawer'), tog=i('tog');
   if(dr)  dr.classList.remove('open');
   if(tog) tog.classList.remove('open');
-  if(tog) tog.setAttribute('aria-expanded','false');
+  if(tog){
+    tog.setAttribute('aria-expanded','false');
+    tog.setAttribute('aria-label','Open navigation menu');
+  }
 }
 
 /* ── utils ── */

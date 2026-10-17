@@ -49,14 +49,17 @@
   padding: 0
 }
 
+/* clip (not hidden) so body never becomes its own scroll box;
+   on phones that trapped the footer under the browser toolbar. */
 html {
-  overflow-x: hidden
+  overflow-x: hidden;
+  overflow-x: clip
 }
 
 body {
   font-family: var(--body);
   line-height: 1.6;
-  overflow-x: hidden
+  overflow-x: clip
 }
 
 a {
@@ -299,28 +302,34 @@ h2.sh-t {
 
 #tog {
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 40px;
+  height: 40px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px
+  padding: 0;
+  flex: 0 0 40px
 }
 
 #tog span {
   display: block;
-  width: 18px;
-  height: 1px;
+  width: 24px;
+  height: 2px;
   transition: all .22s;
-  border-radius: 1px
+  border-radius: 2px;
+  transform-origin: center
 }
 
 #tog.open span:first-child {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(4px) rotate(45deg);
   background: var(--vi)
 }
 
 #tog.open span:last-child {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-4px) rotate(-45deg);
   background: var(--vi)
 }
 
@@ -939,6 +948,102 @@ section::after {
   }
 }
 
+/* Experience details stay complete on desktop and collapse into a readable
+   summary on phones. */
+.exp-more {
+  display: none;
+}
+
+.about-more {
+  display: none;
+}
+
+@media(max-width:900px) {
+  #experience .exp-more {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 9px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--vi);
+    font-family: var(--mono);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  #experience .exp-more::after {
+    content: '↓';
+    margin-left: 6px;
+    transition: transform .2s ease;
+  }
+
+  #experience .exp-hud.is-expanded .exp-more::after {
+    transform: rotate(180deg);
+  }
+
+  #experience .exp-hud:not(.is-expanded) .exp-bullets,
+  #experience .exp-hud:not(.is-expanded) .exp-tags {
+    display: none;
+  }
+
+  #experience .exp-hud:not(.is-expanded) .exp-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  #about .about-more {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 9px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--vi);
+    font-family: var(--mono);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  #about .about-more::after {
+    content: '↓';
+    margin-left: 6px;
+    transition: transform .2s ease;
+  }
+
+  #about #aText:not(.is-expanded) > p:nth-of-type(n+2),
+  #about #aText:not(.is-expanded) > .about-label,
+  #about #aText:not(.is-expanded) > ul,
+  #about #aText:not(.is-expanded) > .grad-line {
+    display: none;
+  }
+
+  #about #aText.is-expanded .about-more::after {
+    transform: rotate(180deg);
+  }
+
+  /* Collapsed: show only the first 4 lines so "Read more" sits higher. */
+  #about #aText:not(.is-expanded) > p:first-of-type {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden
+  }
+
+  #about .about-more {
+    margin-top: 10px
+  }
+}
+
 /* Ordered hierarchy for the hero process map: root -> step 01 -> step 04. */
 
 .work-tree-steps {
@@ -1401,8 +1506,7 @@ section::after {
 }
 
 .ct-link:focus-visible,
-.ct-sb:focus-visible,
-.foot-nav a:focus-visible {
+.ct-sb:focus-visible {
   outline: 2px solid var(--cy);
   outline-offset: 3px
 }
@@ -1554,11 +1658,9 @@ section::after {
 }
 
 .foot-main {
-  display: grid;
-  grid-template-columns: minmax(220px, 1.2fr) minmax(220px, 1fr) auto;
-  gap: 24px;
+  display: flex;
   align-items: center;
-  padding-bottom: 22px
+  padding-bottom: 0
 }
 
 .foot-brand {
@@ -1590,39 +1692,6 @@ section::after {
   font-size: .95rem;
   letter-spacing: .06em;
   text-transform: uppercase
-}
-
-.foot-bottom {
-  font-family: var(--mono)
-}
-
-.foot-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 14px 18px
-}
-
-.foot-nav a {
-  font-family: var(--mono);
-  font-size: .7rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  transition: color .18s
-}
-
-.foot-bottom {
-  line-height: 1.7;
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(30, 45, 74, .7);
-  font-size: .68rem
-}
-
-.foot-bottom #yr {
-  color: var(--vi)
 }
 
 .profile-img::before {
@@ -1895,6 +1964,12 @@ section {
 
 #btt {
   border-radius: 10px
+}
+
+/* Square corner brackets clash with the rounded button. */
+#btt::before,
+#btt::after {
+  display: none
 }
 
 @media(min-width:580px) {
@@ -2226,24 +2301,6 @@ section {
   .results-grid,
   .faq-grid {
     grid-template-columns: repeat(2, 1fr)
-  }
-}
-
-@media(max-width:640px) {
-  .foot-main {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    align-items: start
-  }
-
-  .foot-nav {
-    justify-content: flex-start
-  }
-
-  .foot-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px
   }
 }
 
@@ -2672,10 +2729,6 @@ main#main-content > section {
 
 .foot-inner {
   max-width: 1320px
-}
-
-.foot-nav a:hover {
-  color: #fff
 }
 
 #btt {
@@ -3292,16 +3345,65 @@ main#main-content > section {
   border-color: #b9c9df
 }
 
-#foot .foot-bottom {
-  color: var(--tx2)
-}
+/* Compact mobile cards: keep Experience denser and service icons proportional. */
+@media(max-width:900px) {
+  #svGrid .si {
+    width: 32px;
+    height: 32px;
+    font-size: .68rem;
+    border-radius: 7px
+  }
 
-#foot .foot-nav a {
-  color: var(--tx2)
-}
+  #experience .exp-hud {
+    padding: 17px 16px;
+    border-left-width: 3px;
+    border-radius: 14px
+  }
 
-#foot .foot-nav a:hover {
-  color: var(--vi)
+  #experience .exp-hud-top {
+    display: block;
+    margin-bottom: 8px
+  }
+
+  #experience .exp-role {
+    margin-bottom: 5px;
+    font-size: 1rem
+  }
+
+  #experience .exp-date {
+    display: block;
+    font-size: .7rem
+  }
+
+  #experience .exp-co {
+    margin-bottom: 8px;
+    font-size: .68rem
+  }
+
+  #experience .exp-desc {
+    margin-bottom: 10px;
+    font-size: .88rem;
+    line-height: 1.6
+  }
+
+  #experience .exp-bullets {
+    gap: 6px;
+    margin-bottom: 10px
+  }
+
+  #experience .exp-bullets li {
+    font-size: .82rem;
+    line-height: 1.5
+  }
+
+  #experience .exp-tags {
+    gap: 4px
+  }
+
+  #experience .etag {
+    padding: 5px 8px;
+    font-size: .62rem
+  }
 }
 
 /* One horizontal content rail for the hero and every main section. */
@@ -3602,6 +3704,454 @@ main#main-content h3 {
   }
 
   #foot {
-    padding: 22px 16px 18px
+    padding: 20px 66px calc(28px + env(safe-area-inset-bottom)) 16px;
+    overflow: visible
+  }
+
+  /* Keep the fixed control fully above mobile browser controls. */
+  #btt {
+    right: 16px;
+    bottom: calc(28px + env(safe-area-inset-bottom));
+    z-index: 100;
+  }
+}
+
+/* Footer: light closing band that matches the page's white cards and mono labels. */
+#foot {
+  position: relative;
+  padding: 44px var(--page-gutter) calc(24px + env(safe-area-inset-bottom));
+  color: var(--tx2);
+  background: var(--card);
+  border-top: 1px solid var(--bdr);
+  overflow: hidden
+}
+
+#foot .foot-inner {
+  margin: 0 auto
+}
+
+.foot-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--bdr)
+}
+
+.foot-line {
+  margin: 0;
+  font-family: var(--dsp);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tx)
+}
+
+.foot-line br {
+  display: none
+}
+
+.foot-line span {
+  color: var(--vi)
+}
+
+.foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px
+}
+
+.foot-links a {
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tx2);
+  text-decoration: none;
+  background: var(--surface-2);
+  border: 1px solid var(--bdr);
+  border-radius: 999px;
+  transition: color .2s, border-color .2s, background .2s
+}
+
+.foot-links a:hover {
+  color: var(--vi);
+  border-color: var(--vi);
+  background: var(--v06)
+}
+
+.foot-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 20px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tx3)
+}
+
+.foot-top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tx2);
+  text-decoration: none;
+  transition: color .2s
+}
+
+.foot-top-link:hover {
+  color: var(--vi)
+}
+
+#btt svg {
+  color: #fff
+}
+
+@media(max-width:900px) {
+  #foot {
+    padding: 36px 16px calc(24px + env(safe-area-inset-bottom))
+  }
+
+  .foot-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px
+  }
+
+  .foot-line br {
+    display: inline
+  }
+
+  /* Footer has its own back-to-top link, so hide the floating one there. */
+  #btt.at-foot {
+    opacity: 0;
+    pointer-events: none
+  }
+}
+
+/* Long skill chips wrap instead of spilling off very narrow phones. */
+.sk-hud-item {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere
+}
+
+/* Tablet / large-phone hero: buttons in one even row, process card full width. */
+@media(min-width:641px) and (max-width:900px) {
+  #hCta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch
+  }
+
+  #hCta .btn {
+    justify-content: center
+  }
+
+  #hero .hero-panel {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch
+  }
+}
+
+/* About stats sit in a narrow column up to 900px: use 2x2 there too. */
+@media(max-width:900px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr)
+  }
+
+  .stat:nth-child(2n) {
+    border-right: 0
+  }
+
+  .stat:nth-child(-n+2) {
+    border-bottom: 1px solid var(--bdr)
+  }
+}
+
+/* Long email address wraps instead of being cut off in the contact list. */
+.ct-val {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-overflow: clip
+}
+
+/* Four contact buttons: one even row on phones, 2x2 on the narrowest. */
+@media(max-width:900px) {
+  main#main-content .ct-social-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr))
+  }
+}
+
+@media(max-width:340px) {
+  main#main-content .ct-social-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+  }
+}
+
+/* Floating arrow: smaller and see-through so it doesn't hide card text. */
+@media(max-width:900px) {
+  #btt {
+    width: 38px;
+    height: 38px;
+    opacity: 0;
+    background: rgba(19, 34, 56, .82)
+  }
+
+  #btt.show {
+    opacity: 1
+  }
+
+  #btt.show.at-foot {
+    opacity: 0
+  }
+}
+
+/* Contact details: 2 columns on tablets so the email stays on one line. */
+@media(min-width:580px) and (max-width:900px) {
+  .ct-info-bar {
+    grid-template-columns: repeat(2, 1fr)
+  }
+}
+
+/* Any width: the footer's own "Back to top" replaces the floating button. */
+#btt.show.at-foot {
+  opacity: 0;
+  pointer-events: none
+}
+
+/* Services on phones: give cards inner padding and make the icons readable. */
+@media(max-width:900px) {
+  main#main-content #svGrid .sc {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 8px 14px;
+    padding: 20px 18px
+  }
+
+  main#main-content #svGrid .si {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    border-radius: 10px;
+    animation: none;
+    opacity: 1
+  }
+}
+
+#svGrid .si i {
+  font-size: 1.15rem;
+  line-height: 1
+}
+
+@media(min-width:901px) {
+  #services #svGrid .si {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    animation: none;
+    opacity: 1
+  }
+}
+
+/* Services on phones: icon beside the title, description full card width
+   (same rhythm as Project cards, so text doesn't look oversized). */
+@media(max-width:900px) {
+  main#main-content #services #svGrid .sc {
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-areas: "icon title"
+      "description description";
+    gap: 12px 12px;
+    align-items: center
+  }
+
+  main#main-content #services #svGrid .si {
+    grid-area: icon;
+    width: 36px;
+    height: 36px
+  }
+
+  main#main-content #services #svGrid .si i {
+    font-size: 1rem
+  }
+
+  main#main-content #services #svGrid .stt {
+    grid-area: title;
+    margin: 0
+  }
+
+  main#main-content #services #svGrid .sd {
+    grid-area: description;
+    margin: 0
+  }
+}
+
+/* ── Compact phones (<=480px): smaller type, tighter boxes and spacing.
+   Body text stays >=14px for readability. ── */
+@media(max-width:480px) {
+  :root {
+    --p-size: .9rem;
+    --p-leading: 1.6;
+    --li-size: .84rem;
+    --h2-size: 1.35rem;
+    --h3-size: 1rem
+  }
+
+  /* header + hero */
+  #hdr {
+    height: 56px
+  }
+
+  #hero {
+    padding: 84px 14px 32px
+  }
+
+  #hName {
+    font-size: clamp(2.4rem, 13vw, 3.1rem);
+    margin-bottom: 10px
+  }
+
+  #hRole {
+    font-size: .72rem
+  }
+
+  #hDesc {
+    font-size: .9rem;
+    line-height: 1.55
+  }
+
+  #hCta {
+    gap: 8px
+  }
+
+  #hCta .btn {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: .66rem
+  }
+
+  /* sections + headings */
+  main#main-content > section {
+    padding: 40px 14px
+  }
+
+  main#main-content .sh {
+    margin-bottom: 16px
+  }
+
+  .sh-t {
+    font-size: 1.35rem
+  }
+
+  /* body copy everywhere */
+  #aText > p,
+  #aText li,
+  main#main-content .pd,
+  main#main-content #svGrid .sd,
+  main#main-content .exp-desc,
+  main#main-content .faq-item p {
+    font-size: .9rem;
+    line-height: 1.6
+  }
+
+  /* card titles */
+  main#main-content .pt,
+  main#main-content #svGrid .stt,
+  main#main-content .faq-item summary,
+  #experience .exp-hud h3 {
+    font-size: 1rem;
+    line-height: 1.3
+  }
+
+  /* cards and gaps */
+  #prGrid,
+  #svGrid,
+  #experience #expList,
+  .sk-hub-grid,
+  .faq-grid {
+    gap: 12px
+  }
+
+  main#main-content .exp-hud,
+  main#main-content .pc,
+  main#main-content .sk-card {
+    padding: 14px;
+    border-radius: 14px
+  }
+
+  main#main-content #services #svGrid .sc {
+    padding: 14px;
+    gap: 10px;
+    border-radius: 14px
+  }
+
+  main#main-content #services #svGrid .si {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px
+  }
+
+  main#main-content #services #svGrid .si i {
+    font-size: .9rem
+  }
+
+  main#main-content .sk-hud-item {
+    padding: 3px 9px;
+    font-size: .74rem
+  }
+
+  main#main-content .faq-item summary {
+    padding: 12px 12px 6px
+  }
+
+  main#main-content .faq-item p {
+    padding: 0 12px 12px
+  }
+
+  /* about */
+  main#main-content .profile-img {
+    width: 52%
+  }
+
+  main#main-content .stat {
+    padding: 10px 8px
+  }
+
+  .sv {
+    font-size: 1rem
+  }
+
+  /* contact */
+  main#main-content .ct-field {
+    padding: 10px 12px
+  }
+
+  main#main-content .ct-sb {
+    padding: 10px 4px;
+    gap: 4px
+  }
+
+  /* footer */
+  #foot {
+    padding: 28px 14px calc(20px + env(safe-area-inset-bottom))
+  }
+
+  .foot-line {
+    font-size: 1.05rem
+  }
+
+  .foot-links a {
+    padding: 6px 11px;
+    font-size: .66rem
+  }
+
+  .foot-bar {
+    font-size: .64rem
   }
 }
