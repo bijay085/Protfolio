@@ -1,0 +1,3 @@
+# The old direct-deploy build exposed a generated /dist directory.
+# Keep that legacy artifact out of the public URL space.
+/dist/* /404.html 404!

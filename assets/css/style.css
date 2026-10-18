@@ -21,7 +21,7 @@
   --surface-2: #f4f7fa;
   --line-soft: rgba(185, 200, 216, .8);
   --shadow-card: 0 12px 30px rgba(23, 43, 67, .06);
-  --dsp: 'Chakra Petch', 'Chakra Petch Fallback', sans-serif;
+  --dsp: 'Chakra Petch Fallback', sans-serif;
   --mono: 'JetBrains Mono', 'JetBrains Mono Fallback', monospace;
   --body: 'DM Sans', 'DM Sans Fallback', sans-serif;
   --para: 'Atkinson Hyperlegible', 'Atkinson Hyperlegible Fallback', sans-serif;

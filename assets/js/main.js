@@ -85,7 +85,7 @@ function updateNPTime(){
 
 /* ── magnetic buttons ── */
 function initMagnetic(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(LT768 || !window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   document.querySelectorAll('#hCta .btn').forEach(btn=>{
     btn.addEventListener('mousemove',e=>{
       const r=btn.getBoundingClientRect();
@@ -228,11 +228,24 @@ function initToggle(){
     a.addEventListener('click', ()=>setActive(a.getAttribute('href').slice(1)));
   });
 
-  let scrollTimer;
-  window.addEventListener('scroll', ()=>{
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(onScroll, 80);
-  }, {passive:true});
+  if(LT768 && 'IntersectionObserver' in window){
+    /* Phone nav: avoid offsetTop/scrollHeight reads during scroll. */
+    const sectionObserver=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) setActive(e.target.id);
+      });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    sections.forEach(id=>{
+      const section=document.getElementById(id);
+      if(section) sectionObserver.observe(section);
+    });
+  }else{
+    let scrollTimer;
+    window.addEventListener('scroll', ()=>{
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(onScroll, 80);
+    }, {passive:true});
+  }
 
   /* back to top */
   const btt = i('btt');
@@ -263,7 +276,7 @@ function i(id){ return document.getElementById(id); }
 
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(LT768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const isMobile = LT768;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
   /* idle the hero canvases once the hero is scrolled out of view */
@@ -577,6 +590,7 @@ function initCursorTrail(){
 }
 
 function initGlitchPulse(){
+  if(LT768) return;
   const heads = document.querySelectorAll('.sh-t.gl');
   heads.forEach(el=>{
     /* stagger initial delay */
