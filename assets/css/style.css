@@ -126,24 +126,24 @@ h2.sh-t {
   font-size: var(--h2-size)
 }
 
-.js .rv {
-  opacity: 0;
-  transform: translateY(18px);
+/* Reveal-on-scroll. main.js adds .rv-wait only to elements that start below the viewport, so anything
+   visible at load (including the mobile LCP paragraph and full-page renders such as Google's screenshot)
+   is never hidden. */
+.rv {
   transition: opacity .52s ease, transform .52s ease
 }
 
-.js .rv.on {
-  opacity: 1;
-  transform: none
+.rv.rv-wait {
+  opacity: 0;
+  transform: translateY(18px)
 }
 
-.js .rv.rv-up {
+.rv.rv-wait.rv-up {
   transform: translateY(28px)
 }
 
-.js .rv.rv-up.on,
-.js .rv.rv-left.on,
-.js .rv.rv-right.on {
+/* Kept from the original reveal: once revealed, the element sits in place even when hovered. */
+.js .rv.on {
   transform: none
 }
 
@@ -3069,7 +3069,9 @@ main#main-content > section {
   }
 
   #hero {
-    min-height: 100svh
+    /* capped: renderers like Googlebot use a page-tall viewport, and an uncapped hero then pushed every
+       other section below it, so the reveal kept them hidden in Google's screenshot */
+    min-height: min(100svh, 1100px)
   }
 
   #experience .exp-tl-spine {

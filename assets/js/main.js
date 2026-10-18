@@ -121,13 +121,28 @@ function initReveal(){
         const idx=kids.indexOf(e.target);
         e.target.style.animationDelay=(idx*parseFloat(parent.dataset.stagger))+'s';
       }
+      e.target.classList.remove('rv-wait');
       e.target.classList.add('on');
       e.target.querySelectorAll('[data-count]').forEach(countUp);
       obs.unobserve(e.target);
     });
   },{threshold:0.12,rootMargin:'0px 0px -32px 0px'});
 
-  document.querySelectorAll('.rv').forEach(e=>obs.observe(e));
+  /* Hide only what starts below the viewport; anything visible at load stays visible (LCP, full-page renders).
+     A first observer pass classifies elements without reading layout synchronously (no forced reflow). */
+  const first=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      first.unobserve(e.target);
+      if(e.isIntersecting){
+        e.target.classList.add('on');
+        e.target.querySelectorAll('[data-count]').forEach(countUp);
+      }else{
+        e.target.classList.add('rv-wait');
+        obs.observe(e.target);
+      }
+    });
+  });
+  document.querySelectorAll('.rv').forEach(e=>first.observe(e));
 }
 
 function countUp(el){

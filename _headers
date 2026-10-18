@@ -1,0 +1,18 @@
+# Netlify cache rules. The HTML keeps Netlify's default (always revalidate) so new deploys show up immediately.
+
+# CSS and JS are cache-busted with ?v=... in index.html, so they can be cached for a year.
+# Bump the ?v= value whenever you change one of these files.
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Icon fonts only change when the subset is regenerated.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images keep their filenames when replaced, so cache for 30 days and refresh in the background after that.
+/assets/image/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+/favicon_io/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
