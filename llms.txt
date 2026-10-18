@@ -41,7 +41,7 @@ Accurate labels: SEO Executive, SEO Strategist, technical SEO practitioner, Pyth
 ## Verified Projects
 
 - [NothingWidget](https://github.com/bijay085/NothingWidget): Native Android widget platform inspired by Nothing OS. Includes clock, weather, screen time, quick actions, device health and customization. Stack: Kotlin, Android AppWidget API, Jetpack Compose, DataStore.
-- Medicine Reminder: Completed Android-first personal app for medicine schedules, dose history, alarms and local notifications. Built with Expo, React Native and TypeScript.
+- [Medicine Reminder](https://github.com/bijay085/medicine-reminder): Completed Android-first personal app for medicine schedules, dose history, alarms and local notifications. Stack: Expo, React Native, TypeScript.
 - [NetAudit](https://github.com/bijay085/netaudit_full): Web-based MikroTik RouterOS configuration audit and risk assessment system. Parses `.rsc` exports, applies validation rules, and generates scored findings and remediation guidance. Stack: Python, Django, SQLite, PDF/CSV reports.
 - [FraudShield](https://github.com/bijay085/FraudShield-Project): Rule-based ecommerce fraud detection platform with transaction scoring, explainable flags and administrative reporting workflows. Stack: Python, Flask, MongoDB.
 - [SEO Checker](https://chromewebstore.google.com/detail/seo-checker/kkkmgadddcabjfccbknmalbhiecfheog): Chrome extension that checks page-level SEO signals including meta data, headings, links, images, schema and Search Console performance.

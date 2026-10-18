@@ -5,7 +5,7 @@
   --bdr2: #b9c8d8;
   --vi: #2457e6;
   --cc: #2457e6;
-  --cy: #087f83;
+  --cy: #07797d;
   --pk: #d64a75;
   --v06: rgba(36, 87, 230, .06);
   --v15: rgba(36, 87, 230, .15);
@@ -14,7 +14,7 @@
   --tx: #132238;
   --tx2: #526276;
   --tx-p: #3a4757;
-  --tx3: #7c8b9b;
+  --tx3: #697683;
   --red: #c33f5a;
   --card: #fff;
   --surface-1: #fff;
@@ -1035,7 +1035,6 @@ section::after {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
-    line-clamp: 4;
     overflow: hidden
   }
 

@@ -1,7 +1,9 @@
 'use strict';
 
 let paused = false;
-const VW = window.innerWidth; /* read once — avoids forced reflow on each check */
+/* media queries instead of window.innerWidth — reading innerWidth at startup forced a layout */
+const LT768 = window.matchMedia('(max-width: 767.98px)').matches;
+const LT1080 = window.matchMedia('(max-width: 1079.98px)').matches;
 document.addEventListener('visibilitychange',()=>{ paused = document.hidden; });
 
 /* ── spine draw on scroll ── */
@@ -247,7 +249,7 @@ function i(id){ return document.getElementById(id); }
 /* ── HERO GEOMETRY ─────────────────────── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const isMobile = VW < 768;
+  const isMobile = LT768;
   const BLUE='#3b82f6',CYAN='#67e8f9',VIOLET='#a78bfa',WHITE='#ffffff';
   /* idle the hero canvases once the hero is scrolled out of view */
   let heroOff = false;
@@ -396,7 +398,7 @@ function i(id){ return document.getElementById(id); }
 /* ── EXTRA GEO INSTANCES — reuse spawnGeo from first IIFE via window ── */
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(VW < 768) return;
+  if(LT768) return;
   const sg = window._spawnGeo;
   if(typeof sg !== 'function') return;
 
@@ -439,10 +441,10 @@ function i(id){ return document.getElementById(id); }
 /* ── Floating background particles on each section ── */
 function initSectionBg(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(VW < 1080) return; /* skip on mobile and tablet */
+  if(LT1080) return; /* skip on mobile and tablet */
   const IDS    = ['about','experience','skills','projects','services','contact'];
   const COLORS = ['#3b82f6','#67e8f9','#a78bfa'];
-  const COUNT  = VW < 1080 ? 5 : 8; /* fewer particles on mid-range */
+  const COUNT  = LT1080 ? 5 : 8; /* fewer particles on mid-range */
 
   IDS.forEach(id=>{
     const sec = document.getElementById(id);
@@ -535,7 +537,7 @@ function initSectionBg(){
 function initCursorTrail(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   /* mouse only — on touch tablets the dots never move and sit stuck in the top-left corner */
-  if(VW < 768 || !window.matchMedia('(pointer: fine)').matches) return;
+  if(LT768 || !window.matchMedia('(pointer: fine)').matches) return;
   const TRAIL_COUNT = 10;
   const dots = Array.from({length:TRAIL_COUNT},()=>{
     const d = document.createElement('div');

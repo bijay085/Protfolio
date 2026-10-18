@@ -128,6 +128,7 @@
           {
             "@type": "ListItem", "position": 6,
             "name": "ClickUp Sync",
+            "url": "https://bijaykoirala0.com.np/#project-clickup-sync",
             "description": "Company-internal automation that syncs tasks two ways between Google Sheets and ClickUp, and sends task updates to Slack through a bot."
           },
           {
@@ -139,6 +140,7 @@
           {
             "@type": "ListItem", "position": 8,
             "name": "Medicine Reminder",
+            "url": "https://github.com/bijay085/medicine-reminder",
             "description": "Android-first medication reminder app with medicine schedules, dose history, alarms and local notifications."
           }
         ]
@@ -181,14 +183,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- Full stylesheet — render-blocking so the first paint is already styled (no CLS) -->
-  <link rel="stylesheet" href="assets/css/style.css?v=20261017-22">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261018-1">
 
   <!-- Fonts — swap with metric-matched fallbacks to minimise CLS -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=DM+Sans:wght@400;600&family=IBM+Plex+Sans:wght@400&family=JetBrains+Mono:wght@400;500&family=Atkinson+Hyperlegible:wght@400&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=DM+Sans:wght@400;600&family=IBM+Plex+Sans:wght@400&family=JetBrains+Mono:wght@400;500&family=Atkinson+Hyperlegible:wght@400&display=swap"></noscript>
 
-  <!-- Self-hosted Font Awesome subset (only the icons used, ~7 KB) — loaded blocking so icons never pop in and shift text -->
-  <link rel="stylesheet" href="assets/css/icons.css?v=20261017-4">
+  <!-- Self-hosted Font Awesome subset, inlined so it costs no render-blocking request.
+       shortcut: assets/fonts/fa-*.woff2 contain only the glyphs listed below; when adding an icon, re-subset the Font Awesome 6.5.0 fonts to include its codepoint. -->
+  <style>@font-face{font-family:'Font Awesome 6 Free';font-style:normal;font-weight:900;font-display:block;src:url('assets/fonts/fa-solid-900.woff2') format('woff2')}@font-face{font-family:'Font Awesome 6 Brands';font-style:normal;font-weight:400;font-display:block;src:url('assets/fonts/fa-brands-400.woff2') format('woff2')}.fas,.far,.fa-solid{font-family:'Font Awesome 6 Free';font-weight:900;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;display:inline-block;width:1.25em;text-align:center;line-height:1}.fab,.fa-brands{font-family:'Font Awesome 6 Brands';font-weight:400;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;display:inline-block;width:1.25em;text-align:center;line-height:1}.fa-arrow-up-right-from-square::before{content:"\f35d"}.fa-envelope::before{content:"\f0e0"}.fa-bullseye::before{content:"\f140"}.fa-chart-area::before{content:"\f1fe"}.fa-compass::before{content:"\f14e"}.fa-edit::before{content:"\f044"}.fa-globe::before{content:"\f0ac"}.fa-layer-group::before{content:"\f5fd"}.fa-map::before{content:"\f279"}.fa-mobile-screen-button::before{content:"\f3cd"}.fa-project-diagram::before{content:"\f542"}.fa-shopping-cart::before{content:"\f07a"}.fa-link::before{content:"\f0c1"}.fa-database::before{content:"\f1c0"}.fa-brain::before{content:"\f5dc"}.fa-right-left::before{content:"\f362"}.fa-sitemap::before{content:"\f0e8"}.fa-store::before{content:"\f54e"}.fa-chart-bar::before{content:"\f080"}.fa-chart-line::before{content:"\f201"}.fa-code::before{content:"\f121"}.fa-cogs::before{content:"\f085"}.fa-file-alt::before{content:"\f15c"}.fa-folder-open::before{content:"\f07c"}.fa-key::before{content:"\f084"}.fa-list-ol::before{content:"\f0cb"}.fa-lock::before{content:"\f023"}.fa-plug::before{content:"\f1e6"}.fa-robot::before{content:"\f544"}.fa-search::before{content:"\f002"}.fa-spider::before{content:"\f717"}.fa-table::before{content:"\f0ce"}.fa-terminal::before{content:"\f120"}.fa-chrome::before{content:"\f268"}.fa-github::before{content:"\f09b"}.fa-google::before{content:"\f1a0"}.fa-js::before{content:"\f3b8"}.fa-linkedin::before{content:"\f0e1"}.fa-python::before{content:"\f3e2"}.fa-whatsapp::before{content:"\f232"}.fa-wordpress::before{content:"\f19a"}</style>
   <link rel="preload" href="assets/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -259,7 +262,7 @@
       <div id="hCta">
         <a href="#projects" class="btn btn-solid"><i class="fas fa-folder-open"></i>Work</a>
         <a href="#contact"  class="btn btn-line"><i class="fas fa-terminal"></i>Contact</a>
-        <a href="https://github.com/bijay085" target="_blank" rel="noopener noreferrer" class="btn btn-line"><i class="fab fa-github"></i>GitHub</a>
+        <a href="https://github.com/bijay085" target="_blank" rel="noopener noreferrer" class="btn btn-line" aria-label="GitHub profile"><i class="fab fa-github"></i>GitHub</a>
         <a href="https://wa.me/9779746665541" target="_blank" rel="noopener noreferrer" class="btn btn-line"><i class="fab fa-whatsapp"></i>WhatsApp</a>
       </div>
 
@@ -331,7 +334,7 @@
       <div id="aStats" class="rv">
         <div class="profile-wrap">
           <div class="profile-img">
-            <img src="assets/image/profile.webp" loading="lazy" decoding="async" width="400" height="400" alt="Bijay Koirala, SEO Executive and SEO Strategist from Nepal">
+            <img src="assets/image/profile.webp" srcset="assets/image/profile-400w.webp 400w, assets/image/profile-600w.webp 600w, assets/image/profile.webp 800w" sizes="(min-width: 1280px) 380px, (min-width: 768px) 280px, 200px" loading="lazy" decoding="async" width="400" height="400" alt="Bijay Koirala, SEO Executive and SEO Strategist from Nepal">
           </div>
         </div>
         <div class="stats">
@@ -464,19 +467,19 @@
 
     <div class="results-grid">
       <figure class="result-card rv rv-up">
-        <img src="assets/image/seo-results/search-console-16-months.webp" width="1600" height="740" loading="lazy" decoding="async" alt="Anonymized Google Search Console performance over 16 months showing 23.6 thousand clicks and 916 thousand impressions">
+        <img src="assets/image/seo-results/search-console-16-months.webp" srcset="assets/image/seo-results/search-console-16-months-400w.webp 400w, assets/image/seo-results/search-console-16-months-800w.webp 800w, assets/image/seo-results/search-console-16-months-1200w.webp 1200w, assets/image/seo-results/search-console-16-months.webp 1600w" sizes="(min-width: 1280px) 552px, (min-width: 768px) 366px, calc(100vw - 30px)" width="1600" height="740" loading="lazy" decoding="async" alt="Anonymized Google Search Console performance over 16 months showing 23.6 thousand clicks and 916 thousand impressions">
         <figcaption><strong>16-month view</strong><span>23.6K clicks · 916K impressions · 2.6% CTR · average position 7</span></figcaption>
       </figure>
       <figure class="result-card rv rv-up">
-        <img src="assets/image/seo-results/search-console-28-days-a.webp" width="1600" height="764" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 5.92 thousand clicks and 137 thousand impressions over the last 28 days">
+        <img src="assets/image/seo-results/search-console-28-days-a.webp" srcset="assets/image/seo-results/search-console-28-days-a-400w.webp 400w, assets/image/seo-results/search-console-28-days-a-800w.webp 800w, assets/image/seo-results/search-console-28-days-a-1200w.webp 1200w, assets/image/seo-results/search-console-28-days-a.webp 1600w" sizes="(min-width: 1280px) 552px, (min-width: 768px) 366px, calc(100vw - 30px)" width="1600" height="764" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 5.92 thousand clicks and 137 thousand impressions over the last 28 days">
         <figcaption><strong>28-day comparison</strong><span>5.92K clicks, up 27.8% · 137K impressions, up 15.2%</span></figcaption>
       </figure>
       <figure class="result-card rv rv-up">
-        <img src="assets/image/seo-results/search-console-28-days-b.webp" width="1600" height="770" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 4.48 thousand clicks and 157 thousand impressions over the last 28 days">
+        <img src="assets/image/seo-results/search-console-28-days-b.webp" srcset="assets/image/seo-results/search-console-28-days-b-400w.webp 400w, assets/image/seo-results/search-console-28-days-b-800w.webp 800w, assets/image/seo-results/search-console-28-days-b-1200w.webp 1200w, assets/image/seo-results/search-console-28-days-b.webp 1600w" sizes="(min-width: 1280px) 552px, (min-width: 768px) 366px, calc(100vw - 30px)" width="1600" height="770" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 4.48 thousand clicks and 157 thousand impressions over the last 28 days">
         <figcaption><strong>28-day comparison</strong><span>4.48K clicks, up 15.6% · 157K impressions, up 5.3%</span></figcaption>
       </figure>
       <figure class="result-card rv rv-up">
-        <img src="assets/image/seo-results/search-console-3-months.webp" width="1600" height="745" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 15.7 thousand clicks and 441 thousand impressions over the last three months">
+        <img src="assets/image/seo-results/search-console-3-months.webp" srcset="assets/image/seo-results/search-console-3-months-400w.webp 400w, assets/image/seo-results/search-console-3-months-800w.webp 800w, assets/image/seo-results/search-console-3-months-1200w.webp 1200w, assets/image/seo-results/search-console-3-months.webp 1600w" sizes="(min-width: 1280px) 552px, (min-width: 768px) 366px, calc(100vw - 30px)" width="1600" height="745" loading="lazy" decoding="async" alt="Anonymized Google Search Console comparison showing 15.7 thousand clicks and 441 thousand impressions over the last three months">
         <figcaption><strong>3-month comparison</strong><span>15.7K clicks, up 119.7% · 441K impressions, up 5.5%</span></figcaption>
       </figure>
     </div>
@@ -595,7 +598,7 @@
       <div class="techs">
         <span class="tg">JavaScript</span><span class="tg">Chrome Manifest V3</span><span class="tg">SEO</span>
       </div>
-      <div class="pls"><a href="https://chromewebstore.google.com/detail/seo-checker/kkkmgadddcabjfccbknmalbhiecfheog" target="_blank" rel="noopener noreferrer" class="pl"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
+      <div class="pls"><a href="https://chromewebstore.google.com/detail/seo-checker/kkkmgadddcabjfccbknmalbhiecfheog" target="_blank" rel="noopener noreferrer" class="pl" aria-label="SEO Checker on Chrome Web Store"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
     </article><article class="pc rv rv-up" data-project-index="02">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -608,7 +611,7 @@
       <div class="techs">
         <span class="tg">JavaScript</span><span class="tg">Chrome Manifest V3</span><span class="tg">SERP Research</span>
       </div>
-      <div class="pls"><a href="https://chromewebstore.google.com/detail/serp-sheet/loomginndkpobojjpgigmgchdoehepem" target="_blank" rel="noopener noreferrer" class="pl"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
+      <div class="pls"><a href="https://chromewebstore.google.com/detail/serp-sheet/loomginndkpobojjpgigmgchdoehepem" target="_blank" rel="noopener noreferrer" class="pl" aria-label="SERP Sheet on Chrome Web Store"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
     </article><article class="pc rv rv-up" data-project-index="03">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -621,7 +624,7 @@
       <div class="techs">
         <span class="tg">JavaScript</span><span class="tg">Chrome Manifest V3</span><span class="tg">Browser Workflows</span>
       </div>
-      <div class="pls"><a href="https://chromewebstore.google.com/detail/infofill/pahmcohlbodgpmagnneghackbogangdc" target="_blank" rel="noopener noreferrer" class="pl"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
+      <div class="pls"><a href="https://chromewebstore.google.com/detail/infofill/pahmcohlbodgpmagnneghackbogangdc" target="_blank" rel="noopener noreferrer" class="pl" aria-label="InfoFill on Chrome Web Store"><i class="fas fa-arrow-up-right-from-square"></i>Chrome Web Store</a></div>
     </article><article class="pc rv rv-up" data-project-index="04">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -634,7 +637,7 @@
       <div class="techs">
         <span class="tg">Python</span><span class="tg">Django</span><span class="tg">SQLite</span><span class="tg">PDF/CSV Reports</span>
       </div>
-      <div class="pls"><a href="https://github.com/bijay085/netaudit_full" target="_blank" rel="noopener noreferrer" class="pl"><i class="fab fa-github"></i>GitHub</a></div>
+      <div class="pls"><a href="https://github.com/bijay085/netaudit_full" target="_blank" rel="noopener noreferrer" class="pl" aria-label="NetAudit on GitHub"><i class="fab fa-github"></i>GitHub</a></div>
     </article><article class="pc rv rv-up" data-project-index="05">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
@@ -647,8 +650,8 @@
       <div class="techs">
         <span class="tg">Python</span><span class="tg">Flask</span><span class="tg">MongoDB</span>
       </div>
-      <div class="pls"><a href="https://github.com/bijay085/FraudShield-Project" target="_blank" rel="noopener noreferrer" class="pl"><i class="fab fa-github"></i>GitHub</a></div>
-    </article><article class="pc rv rv-up" data-project-index="06">
+      <div class="pls"><a href="https://github.com/bijay085/FraudShield-Project" target="_blank" rel="noopener noreferrer" class="pl" aria-label="FraudShield System on GitHub"><i class="fab fa-github"></i>GitHub</a></div>
+    </article><article class="pc rv rv-up" id="project-clickup-sync" data-project-index="06">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
       <div class="pr">
@@ -673,8 +676,8 @@
       <div class="techs">
         <span class="tg">Kotlin</span><span class="tg">Android AppWidget API</span><span class="tg">Jetpack Compose</span><span class="tg">DataStore</span>
       </div>
-      <div class="pls"><a href="https://github.com/bijay085/NothingWidget" target="_blank" rel="noopener noreferrer" class="pl"><i class="fab fa-github"></i>GitHub</a></div>
-    </article><article class="pc rv rv-up" data-project-index="08">
+      <div class="pls"><a href="https://github.com/bijay085/NothingWidget" target="_blank" rel="noopener noreferrer" class="pl" aria-label="NothingWidget on GitHub"><i class="fab fa-github"></i>GitHub</a></div>
+    </article><article class="pc rv rv-up" id="project-medicine-reminder" data-project-index="08">
       <div class="c-tl"></div><div class="c-tr"></div>
       <div class="c-bl"></div><div class="c-br"></div>
       <div class="pr">
@@ -686,7 +689,7 @@
       <div class="techs">
         <span class="tg">Expo</span><span class="tg">React Native</span><span class="tg">TypeScript</span><span class="tg">Android Notifications</span>
       </div>
-      <div class="pls"><span class="pl lk"><i class="fas fa-mobile-screen-button"></i>Personal app</span></div>
+      <div class="pls"><a href="https://github.com/bijay085/medicine-reminder" target="_blank" rel="noopener noreferrer" class="pl" aria-label="Medicine Reminder on GitHub"><i class="fab fa-github"></i>GitHub</a></div>
     </article><article class="pc dash rv rv-up" data-project-index="+">
     <div class="c-tl"></div><div class="c-tr"></div>
     <div class="c-bl"></div><div class="c-br"></div>
@@ -863,6 +866,6 @@
       <path d="M6 10V2M6 2L2 6M6 2L10 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
-  <script src="assets/js/main.js?v=20261017-7" defer></script>
+  <script src="assets/js/main.js?v=20261018-1" defer></script>
 </body>
 </html>
